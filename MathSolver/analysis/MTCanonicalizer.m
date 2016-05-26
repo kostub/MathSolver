@@ -9,25 +9,25 @@
 //
 
 #import "MTCanonicalizer.h"
-#import "RemoveNegativesRule.h"
-#import "FlattenRule.h"
-#import "CalculateRule.h"
-#import "IdentityRule.h"
-#import "DistributionRule.h"
-#import "ZeroRule.h"
-#import "CollectLikeTermsRule.h"
-#import "ReorderTermsRule.h"
+#import "MTRemoveNegativesRule.h"
+#import "MTFlattenRule.h"
+#import "MTCalculateRule.h"
+#import "MTIdentityRule.h"
+#import "MTDistributionRule.h"
+#import "MTZeroRule.h"
+#import "MTCollectLikeTermsRule.h"
+#import "MTReorderTermsRule.h"
 #import "MTExpressionUtil.h"
-#import "ReduceRule.h"
-#import "NullRule.h"
-#import "NestedDivisionRule.h"
-#import "RationalAdditionRule.h"
-#import "CancelCommonFactorsRule.h"
-#import "RationalMultiplicationRule.h"
+#import "MTReduceRule.h"
+#import "MTNullRule.h"
+#import "MTNestedDivisionRule.h"
+#import "MTRationalAdditionRule.h"
+#import "MTCancelCommonFactorsRule.h"
+#import "MTRationalMultiplicationRule.h"
 
 @class MTExpression;
 
-@implementation CanonicalizerFactory
+@implementation MTCanonicalizerFactory
 
 + (id<MTCanonicalizer>)getCanonicalizer:(id<MTMathEntity>)entity
 {
@@ -42,20 +42,20 @@
     }
 }
 
-+ (ExpressionCanonicalizer *)getExpressionCanonicalizer
++ (MTExpressionCanonicalizer *)getExpressionCanonicalizer
 {
-    static ExpressionCanonicalizer* expCanonicalizer = nil;
+    static MTExpressionCanonicalizer* expCanonicalizer = nil;
     if (!expCanonicalizer) {
-        expCanonicalizer = [ExpressionCanonicalizer new];
+        expCanonicalizer = [MTExpressionCanonicalizer new];
     }
     return expCanonicalizer;
 }
 
-+ (EquationCanonicalizer *)getEquationCanonicalizer
++ (MTEquationCanonicalizer *)getEquationCanonicalizer
 {
-    static EquationCanonicalizer* eqCanon = nil;
+    static MTEquationCanonicalizer* eqCanon = nil;
     if (!eqCanon) {
-        eqCanon = [EquationCanonicalizer new];
+        eqCanon = [MTEquationCanonicalizer new];
     }
     return eqCanon;
 }
@@ -64,10 +64,10 @@
 
 #pragma mark - ExpressionCanonicalizer
 
-@implementation ExpressionCanonicalizer {
-    RemoveNegativesRule *_removeNegatives;
-    FlattenRule *_flatten;
-    ReorderTermsRule *_reorder;
+@implementation MTExpressionCanonicalizer {
+    MTRemoveNegativesRule *_removeNegatives;
+    MTFlattenRule *_flatten;
+    MTReorderTermsRule *_reorder;
     NSArray *_canonicalizingRules;
     NSArray *_divisionRules;
 }
@@ -76,30 +76,30 @@
 {
     self = [super init];
     if (self) {
-        _removeNegatives = [RemoveNegativesRule rule];
-        _flatten = [FlattenRule rule];
-        _reorder = [ReorderTermsRule rule];
+        _removeNegatives = [MTRemoveNegativesRule rule];
+        _flatten = [MTFlattenRule rule];
+        _reorder = [MTReorderTermsRule rule];
         // All rules except division rules
-        _canonicalizingRules = @[[CalculateRule rule],
-                                 [NullRule rule],
-                                 [IdentityRule rule],
-                                 [ZeroRule rule],
-                                 [DistributionRule rule],
-                                 [FlattenRule rule],
-                                 [CollectLikeTermsRule rule],
-                                 [ReduceRule rule]];
+        _canonicalizingRules = @[[MTCalculateRule rule],
+                                 [MTNullRule rule],
+                                 [MTIdentityRule rule],
+                                 [MTZeroRule rule],
+                                 [MTDistributionRule rule],
+                                 [MTFlattenRule rule],
+                                 [MTCollectLikeTermsRule rule],
+                                 [MTReduceRule rule]];
         // All rules except distribution with the addition of division rules
-        _divisionRules = @[[CalculateRule rule],
-                           [NullRule rule],
-                           [IdentityRule rule],
-                           [ZeroRule rule],
-                           [FlattenRule rule],
-                           [NestedDivisionRule rule],
-                           [CollectLikeTermsRule rule],
-                           [ReduceRule rule],
-                           [RationalAdditionRule rule],
-                           [RationalMultiplicationRule rule],
-                           [CancelCommonFactorsRule rule]];
+        _divisionRules = @[[MTCalculateRule rule],
+                           [MTNullRule rule],
+                           [MTIdentityRule rule],
+                           [MTZeroRule rule],
+                           [MTFlattenRule rule],
+                           [MTNestedDivisionRule rule],
+                           [MTCollectLikeTermsRule rule],
+                           [MTReduceRule rule],
+                           [MTRationalAdditionRule rule],
+                           [MTRationalMultiplicationRule rule],
+                           [MTCancelCommonFactorsRule rule]];
     }
     return self;
 }
@@ -164,7 +164,7 @@
     BOOL modifed = YES;
     while (modifed) {
         modifed = NO;
-        for (Rule* rule in rules) {
+        for (MTRule* rule in rules) {
             MTExpression* next = [rule apply:current];
             if (next != current) {
                 modifed = YES;
@@ -179,11 +179,11 @@
 
 #pragma mark - EquationCanonicalizer
 
-@implementation EquationCanonicalizer
+@implementation MTEquationCanonicalizer
 
 - (MTEquation *)normalize:(MTEquation *)eq
 {
-    ExpressionCanonicalizer* expCanon = [CanonicalizerFactory getExpressionCanonicalizer];
+    MTExpressionCanonicalizer* expCanon = [MTCanonicalizerFactory getExpressionCanonicalizer];
     MTExpression* normalizedLhs = [expCanon normalize:eq.lhs];
     MTExpression* normalizedRhs = [expCanon normalize:eq.rhs];
     return [MTEquation equationWithRelation:eq.relation lhs:normalizedLhs rhs:normalizedRhs];
@@ -192,7 +192,7 @@
 - (MTEquation *)normalForm:(MTEquation *)eq
 {
     MTExpression* newLhs = [MTOperator operatorWithType:kMTSubtraction args:eq.lhs :eq.rhs];
-    ExpressionCanonicalizer* expCanon = [CanonicalizerFactory getExpressionCanonicalizer];
+    MTExpressionCanonicalizer* expCanon = [MTCanonicalizerFactory getExpressionCanonicalizer];
     MTExpression* normalizedNewLhs = [expCanon normalize:newLhs];
     MTExpression* normalForm = [expCanon normalForm:normalizedNewLhs];
     

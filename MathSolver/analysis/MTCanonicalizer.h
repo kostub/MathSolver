@@ -10,8 +10,8 @@
 #import <Foundation/Foundation.h>
 #import "MTExpression.h"
 
-@class ExpressionCanonicalizer;
-@class EquationCanonicalizer;
+@class MTExpressionCanonicalizer;
+@class MTEquationCanonicalizer;
 
 @protocol MTCanonicalizer <NSObject>
 
@@ -25,17 +25,17 @@
 
 @end
 
-@interface CanonicalizerFactory : NSObject
+@interface MTCanonicalizerFactory : NSObject
 
 // Returns the singleton instance of a canonicalizer applicable to the given entity
 + (id<MTCanonicalizer>) getCanonicalizer:(id<MTMathEntity>) entity;
 
-+ (ExpressionCanonicalizer*) getExpressionCanonicalizer;
-+ (EquationCanonicalizer*) getEquationCanonicalizer;
++ (MTExpressionCanonicalizer*) getExpressionCanonicalizer;
++ (MTEquationCanonicalizer*) getEquationCanonicalizer;
 
 @end
 
-@interface ExpressionCanonicalizer : NSObject<MTCanonicalizer>
+@interface MTExpressionCanonicalizer : NSObject<MTCanonicalizer>
 
 // Normalize the expression by removing -ves and extra parenthesis.
 - (MTExpression*) normalize: (MTExpression*) ex;
@@ -47,7 +47,7 @@
 
 @end
 
-@interface EquationCanonicalizer : NSString<MTCanonicalizer>
+@interface MTEquationCanonicalizer : NSString<MTCanonicalizer>
 
 // Normalize the expression by removing -ves and extra parenthesis.
 - (MTEquation*) normalize: (MTEquation*) ex;

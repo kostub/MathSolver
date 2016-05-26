@@ -9,24 +9,24 @@
 //
 
 #import "MTExpressionUtil.h"
-#import "CalculateRule.h"
-#import "IdentityRule.h"
-#import "ReduceRule.h"
+#import "MTCalculateRule.h"
+#import "MTIdentityRule.h"
+#import "MTReduceRule.h"
 #import "MTCanonicalizer.h"
 
-static CalculateRule *_calc;
-static IdentityRule *_identity;
+static MTCalculateRule *_calc;
+static MTIdentityRule *_identity;
 
-static Rule* getCalculateRule() {
+static MTRule* getCalculateRule() {
     if (_calc == nil) {
-        _calc = [CalculateRule rule];
+        _calc = [MTCalculateRule rule];
     }
     return _calc;
 }
 
-static Rule* getIdentityRule() {
+static MTRule* getIdentityRule() {
     if (_identity == nil) {
-        _identity = [IdentityRule rule];
+        _identity = [MTIdentityRule rule];
     }
     return _identity;
 }
@@ -112,7 +112,7 @@ static Rule* getIdentityRule() {
         return expr;
     } else {
         // Normalize this to remove the -ve sign. (Calculation and removal of identity are the only things that should happen)
-        id<MTCanonicalizer> canon = [CanonicalizerFactory getExpressionCanonicalizer];
+        id<MTCanonicalizer> canon = [MTCanonicalizerFactory getExpressionCanonicalizer];
         MTExpression* normalized = [canon normalize:[self negate:expr]];
         return [canon normalForm:normalized];
     }
@@ -134,21 +134,21 @@ static Rule* getIdentityRule() {
     if ([expr isEqualUptoRearrangement:other]) {
         return true;
     }
-    Rule* calculate = getCalculateRule();
+    MTRule* calculate = getCalculateRule();
     MTExpression* calculatedTerm = [calculate applyToTopLevelNode:expr withChildren:expr.children];
     if ([calculatedTerm isEqualUptoRearrangement:other]) {
         return true;
     }
     
     // Reduce fractions in the expression if any
-    Rule* reduceRule = [ReduceRule rule];
+    MTRule* reduceRule = [MTReduceRule rule];
     MTExpression* fractionsReduced = [reduceRule apply:calculatedTerm];
     if (fractionsReduced != calculatedTerm && [fractionsReduced isEqualUptoRearrangement:other]) {
         return true;
     }
     
     // apply the identity rule to strip away any 1s.
-    Rule* identity = getIdentityRule();
+    MTRule* identity = getIdentityRule();
     MTExpression* identityRemovedTerm = [identity applyToTopLevelNode:fractionsReduced withChildren:fractionsReduced.children];
     if (identityRemovedTerm != fractionsReduced && [identityRemovedTerm isEqualUptoRearrangement:other]) {
         return true;

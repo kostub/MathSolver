@@ -28,7 +28,7 @@
     self = [super init];
     if (self) {
         if (expression) {
-            id<MTCanonicalizer> canonicalizer = [CanonicalizerFactory getCanonicalizer:expression];
+            id<MTCanonicalizer> canonicalizer = [MTCanonicalizerFactory getCanonicalizer:expression];
             _original = expression;
             _normalized = [canonicalizer normalize:expression];
             _normalForm = [canonicalizer normalForm:_normalized];

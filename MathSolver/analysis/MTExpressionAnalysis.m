@@ -12,15 +12,15 @@
 
 #import "MTExpressionInfo.h"
 #import "MTExpressionUtil.h"
-#import "ReorderTermsRule.h"
-#import "DecimalReduceRule.h"
+#import "MTReorderTermsRule.h"
+#import "MTDecimalReduceRule.h"
 
 @implementation MTExpressionAnalysis
 
 + (BOOL) isExpressionFinalStep:(MTExpressionInfo*) expressionInfo forEntityType:(MTMathEntityType) originalEntityType
 {
     if (originalEntityType == kMTExpression) {
-        ReorderTermsRule* rule = [ReorderTermsRule rule];
+        MTReorderTermsRule* rule = [MTReorderTermsRule rule];
         // apply the rules before checking equality since the user may not have the terms in the right order or reduced decimals.
         return [self isReducedExpression:[rule apply:expressionInfo.normalized] withNormalForm:expressionInfo.normalForm];
     } else if (originalEntityType == kMTEquation) {
@@ -37,7 +37,7 @@
 
 + (BOOL) isReducedExpression:(MTExpression*) expr withNormalForm:(MTExpression*) normalForm
 {
-    DecimalReduceRule* decimalReduce = [DecimalReduceRule rule];
+    MTDecimalReduceRule* decimalReduce = [MTDecimalReduceRule rule];
     return [normalForm isEqual:[decimalReduce apply:expr]];
 }
 
