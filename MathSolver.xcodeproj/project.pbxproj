@@ -9,7 +9,19 @@
 /* Begin PBXBuildFile section */
 		49DEC84D1CF774E4000053CD /* MathSolver.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 49DEC84C1CF774E4000053CD /* MathSolver.h */; };
 		49DEC84F1CF774E4000053CD /* MathSolver.m in Sources */ = {isa = PBXBuildFile; fileRef = 49DEC84E1CF774E4000053CD /* MathSolver.m */; };
+		49DEC85C1CF7755F000053CD /* MathSolverTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 49DEC85B1CF7755F000053CD /* MathSolverTests.m */; };
+		49DEC85E1CF7755F000053CD /* libMathSolver.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 49DEC8491CF774E4000053CD /* libMathSolver.a */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		49DEC85F1CF7755F000053CD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 49DEC8411CF774E4000053CD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 49DEC8481CF774E4000053CD;
+			remoteInfo = MathSolver;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		49DEC8471CF774E4000053CD /* CopyFiles */ = {
@@ -28,6 +40,9 @@
 		49DEC8491CF774E4000053CD /* libMathSolver.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMathSolver.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		49DEC84C1CF774E4000053CD /* MathSolver.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MathSolver.h; sourceTree = "<group>"; };
 		49DEC84E1CF774E4000053CD /* MathSolver.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MathSolver.m; sourceTree = "<group>"; };
+		49DEC8591CF7755F000053CD /* MathSolverTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MathSolverTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		49DEC85B1CF7755F000053CD /* MathSolverTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MathSolverTests.m; sourceTree = "<group>"; };
+		49DEC85D1CF7755F000053CD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -38,6 +53,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		49DEC8561CF7755F000053CD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				49DEC85E1CF7755F000053CD /* libMathSolver.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -45,6 +68,7 @@
 			isa = PBXGroup;
 			children = (
 				49DEC84B1CF774E4000053CD /* MathSolver */,
+				49DEC85A1CF7755F000053CD /* MathSolverTests */,
 				49DEC84A1CF774E4000053CD /* Products */,
 			);
 			sourceTree = "<group>";
@@ -53,6 +77,7 @@
 			isa = PBXGroup;
 			children = (
 				49DEC8491CF774E4000053CD /* libMathSolver.a */,
+				49DEC8591CF7755F000053CD /* MathSolverTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -64,6 +89,15 @@
 				49DEC84E1CF774E4000053CD /* MathSolver.m */,
 			);
 			path = MathSolver;
+			sourceTree = "<group>";
+		};
+		49DEC85A1CF7755F000053CD /* MathSolverTests */ = {
+			isa = PBXGroup;
+			children = (
+				49DEC85B1CF7755F000053CD /* MathSolverTests.m */,
+				49DEC85D1CF7755F000053CD /* Info.plist */,
+			);
+			path = MathSolverTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -86,6 +120,24 @@
 			productReference = 49DEC8491CF774E4000053CD /* libMathSolver.a */;
 			productType = "com.apple.product-type.library.static";
 		};
+		49DEC8581CF7755F000053CD /* MathSolverTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 49DEC8611CF7755F000053CD /* Build configuration list for PBXNativeTarget "MathSolverTests" */;
+			buildPhases = (
+				49DEC8551CF7755F000053CD /* Sources */,
+				49DEC8561CF7755F000053CD /* Frameworks */,
+				49DEC8571CF7755F000053CD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				49DEC8601CF7755F000053CD /* PBXTargetDependency */,
+			);
+			name = MathSolverTests;
+			productName = MathSolverTests;
+			productReference = 49DEC8591CF7755F000053CD /* MathSolverTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -96,6 +148,9 @@
 				ORGANIZATIONNAME = "Kostub Deshmukh";
 				TargetAttributes = {
 					49DEC8481CF774E4000053CD = {
+						CreatedOnToolsVersion = 7.2.1;
+					};
+					49DEC8581CF7755F000053CD = {
 						CreatedOnToolsVersion = 7.2.1;
 					};
 				};
@@ -113,9 +168,20 @@
 			projectRoot = "";
 			targets = (
 				49DEC8481CF774E4000053CD /* MathSolver */,
+				49DEC8581CF7755F000053CD /* MathSolverTests */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		49DEC8571CF7755F000053CD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		49DEC8451CF774E4000053CD /* Sources */ = {
@@ -126,7 +192,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		49DEC8551CF7755F000053CD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				49DEC85C1CF7755F000053CD /* MathSolverTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		49DEC8601CF7755F000053CD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 49DEC8481CF774E4000053CD /* MathSolver */;
+			targetProxy = 49DEC85F1CF7755F000053CD /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		49DEC8501CF774E4000053CD /* Debug */ = {
@@ -165,7 +247,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -202,7 +284,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -227,6 +309,28 @@
 			};
 			name = Release;
 		};
+		49DEC8621CF7755F000053CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = MathSolverTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = org.math.MathSolverTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		49DEC8631CF7755F000053CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = MathSolverTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = org.math.MathSolverTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -244,6 +348,14 @@
 			buildConfigurations = (
 				49DEC8531CF774E4000053CD /* Debug */,
 				49DEC8541CF774E4000053CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		49DEC8611CF7755F000053CD /* Build configuration list for PBXNativeTarget "MathSolverTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				49DEC8621CF7755F000053CD /* Debug */,
+				49DEC8631CF7755F000053CD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 		};
