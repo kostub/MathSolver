@@ -7,14 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		49A4D85C1CF7A59100F8DCED /* MTSymbol.m in Sources */ = {isa = PBXBuildFile; fileRef = 49A4D8591CF7A59100F8DCED /* MTSymbol.m */; };
+		49A4D85D1CF7A59100F8DCED /* MTTokenizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 49A4D85B1CF7A59100F8DCED /* MTTokenizer.m */; };
 		49DEC85C1CF7755F000053CD /* MathSolverTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 49DEC85B1CF7755F000053CD /* MathSolverTests.m */; };
 		49DEC85E1CF7755F000053CD /* libMathSolver.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 49DEC8491CF774E4000053CD /* libMathSolver.a */; };
 		49DEC89B1CF77A16000053CD /* MTExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = 49DEC8661CF77A16000053CD /* MTExpression.m */; };
 		49DEC89C1CF77A16000053CD /* MTExpressionUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 49DEC8681CF77A16000053CD /* MTExpressionUtil.m */; };
 		49DEC89D1CF77A16000053CD /* MTInfixParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 49DEC86A1CF77A16000053CD /* MTInfixParser.m */; };
 		49DEC89E1CF77A16000053CD /* MTRational.m in Sources */ = {isa = PBXBuildFile; fileRef = 49DEC86C1CF77A16000053CD /* MTRational.m */; };
-		49DEC89F1CF77A16000053CD /* MTSymbol.m in Sources */ = {isa = PBXBuildFile; fileRef = 49DEC86E1CF77A16000053CD /* MTSymbol.m */; };
-		49DEC8A01CF77A16000053CD /* MTTokenizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 49DEC8701CF77A16000053CD /* MTTokenizer.m */; };
 		49DEC8A11CF77A16000053CD /* MTCanonicalizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 49DEC8731CF77A16000053CD /* MTCanonicalizer.m */; };
 		49DEC8A21CF77A16000053CD /* MTExpressionAnalysis.m in Sources */ = {isa = PBXBuildFile; fileRef = 49DEC8751CF77A16000053CD /* MTExpressionAnalysis.m */; };
 		49DEC8A31CF77A16000053CD /* MTExpressionInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 49DEC8771CF77A16000053CD /* MTExpressionInfo.m */; };
@@ -61,6 +61,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		49A4D8581CF7A59100F8DCED /* MTSymbol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTSymbol.h; sourceTree = "<group>"; };
+		49A4D8591CF7A59100F8DCED /* MTSymbol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTSymbol.m; sourceTree = "<group>"; };
+		49A4D85A1CF7A59100F8DCED /* MTTokenizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTTokenizer.h; sourceTree = "<group>"; };
+		49A4D85B1CF7A59100F8DCED /* MTTokenizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTTokenizer.m; sourceTree = "<group>"; };
 		49DEC8491CF774E4000053CD /* libMathSolver.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMathSolver.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		49DEC8591CF7755F000053CD /* MathSolverTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MathSolverTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		49DEC85B1CF7755F000053CD /* MathSolverTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MathSolverTests.m; sourceTree = "<group>"; };
@@ -73,10 +77,6 @@
 		49DEC86A1CF77A16000053CD /* MTInfixParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTInfixParser.m; sourceTree = "<group>"; };
 		49DEC86B1CF77A16000053CD /* MTRational.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTRational.h; sourceTree = "<group>"; };
 		49DEC86C1CF77A16000053CD /* MTRational.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTRational.m; sourceTree = "<group>"; };
-		49DEC86D1CF77A16000053CD /* MTSymbol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTSymbol.h; sourceTree = "<group>"; };
-		49DEC86E1CF77A16000053CD /* MTSymbol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTSymbol.m; sourceTree = "<group>"; };
-		49DEC86F1CF77A16000053CD /* MTTokenizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTTokenizer.h; sourceTree = "<group>"; };
-		49DEC8701CF77A16000053CD /* MTTokenizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTTokenizer.m; sourceTree = "<group>"; };
 		49DEC8721CF77A16000053CD /* MTCanonicalizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTCanonicalizer.h; sourceTree = "<group>"; };
 		49DEC8731CF77A16000053CD /* MTCanonicalizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTCanonicalizer.m; sourceTree = "<group>"; };
 		49DEC8741CF77A16000053CD /* MTExpressionAnalysis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTExpressionAnalysis.h; sourceTree = "<group>"; };
@@ -143,6 +143,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		49A4D8571CF7A59100F8DCED /* internal */ = {
+			isa = PBXGroup;
+			children = (
+				49A4D8581CF7A59100F8DCED /* MTSymbol.h */,
+				49A4D8591CF7A59100F8DCED /* MTSymbol.m */,
+				49A4D85A1CF7A59100F8DCED /* MTTokenizer.h */,
+				49A4D85B1CF7A59100F8DCED /* MTTokenizer.m */,
+			);
+			path = internal;
+			sourceTree = "<group>";
+		};
 		49DEC8401CF774E4000053CD = {
 			isa = PBXGroup;
 			children = (
@@ -185,6 +196,7 @@
 		49DEC8641CF77A16000053CD /* expressions */ = {
 			isa = PBXGroup;
 			children = (
+				49A4D8571CF7A59100F8DCED /* internal */,
 				49DEC8651CF77A16000053CD /* MTExpression.h */,
 				49DEC8661CF77A16000053CD /* MTExpression.m */,
 				49DEC8671CF77A16000053CD /* MTExpressionUtil.h */,
@@ -193,10 +205,6 @@
 				49DEC86A1CF77A16000053CD /* MTInfixParser.m */,
 				49DEC86B1CF77A16000053CD /* MTRational.h */,
 				49DEC86C1CF77A16000053CD /* MTRational.m */,
-				49DEC86D1CF77A16000053CD /* MTSymbol.h */,
-				49DEC86E1CF77A16000053CD /* MTSymbol.m */,
-				49DEC86F1CF77A16000053CD /* MTTokenizer.h */,
-				49DEC8701CF77A16000053CD /* MTTokenizer.m */,
 			);
 			path = expressions;
 			sourceTree = "<group>";
@@ -400,10 +408,11 @@
 				49DEC8A61CF77A16000053CD /* MTCollectLikeTermsRule.m in Sources */,
 				49DEC8A51CF77A16000053CD /* MTCancelCommonFactorsRule.m in Sources */,
 				49DEC8AC1CF77A16000053CD /* MTNestedDivisionRule.m in Sources */,
-				49DEC8A01CF77A16000053CD /* MTTokenizer.m in Sources */,
 				49DEC89B1CF77A16000053CD /* MTExpression.m in Sources */,
 				49DEC8A31CF77A16000053CD /* MTExpressionInfo.m in Sources */,
+				49A4D85C1CF7A59100F8DCED /* MTSymbol.m in Sources */,
 				49DEC8B01CF77A16000053CD /* MTReduceRule.m in Sources */,
+				49A4D85D1CF7A59100F8DCED /* MTTokenizer.m in Sources */,
 				49DEC89C1CF77A16000053CD /* MTExpressionUtil.m in Sources */,
 				49DEC8A71CF77A16000053CD /* MTDecimalReduceRule.m in Sources */,
 				49DEC8A91CF77A16000053CD /* MTDivisionIdentityRule.m in Sources */,
@@ -422,7 +431,6 @@
 				49DEC8AB1CF77A16000053CD /* MTIdentityRule.m in Sources */,
 				49DEC8B21CF77A16000053CD /* MTReorderTermsRule.m in Sources */,
 				49DEC8A81CF77A16000053CD /* MTDistributionRule.m in Sources */,
-				49DEC89F1CF77A16000053CD /* MTSymbol.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

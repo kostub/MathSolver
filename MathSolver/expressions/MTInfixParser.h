@@ -39,7 +39,7 @@ FOUNDATION_EXPORT NSString *const FXParseErrorOffset;
 // Get the error associated with the parsing
 - (NSError *) error;
 
-enum MTParserErrors {
+enum MTParserErrors : NSUInteger {
     MTParserMismatchParens = 1,
     MTParserNotEnoughArguments,
     MTParserMissingOperator,
