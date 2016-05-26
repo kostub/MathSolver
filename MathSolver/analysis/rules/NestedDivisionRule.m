@@ -9,51 +9,51 @@
 //
 
 #import "NestedDivisionRule.h"
-#import "Expression.h"
-#import "ExpressionUtil.h"
+#import "MTExpression.h"
+#import "MTExpressionUtil.h"
 
 @implementation NestedDivisionRule
 
-- (Expression*) applyToTopLevelNode:(Expression *)expr withChildren:(NSArray *)args
+- (MTExpression*) applyToTopLevelNode:(MTExpression *)expr withChildren:(NSArray *)args
 {
-    if ([ExpressionUtil isDivision:expr]) {
+    if ([MTExpressionUtil isDivision:expr]) {
         NSAssert(args.count == 2, @"A division can only have 2 arguments.");
-        Expression* first = args[0];
-        Expression* second = args[1];
+        MTExpression* first = args[0];
+        MTExpression* second = args[1];
         
-        if ([ExpressionUtil isDivision:first] ) {
-            return [self simplifyNumeratorIsDivision:(FXOperator*) first denominator:second];
-        } else if ([ExpressionUtil isDivision:second]) {
-            return [self simplifyDenominatorIsDivision:first denominator:(FXOperator*) second];
+        if ([MTExpressionUtil isDivision:first] ) {
+            return [self simplifyNumeratorIsDivision:(MTOperator*) first denominator:second];
+        } else if ([MTExpressionUtil isDivision:second]) {
+            return [self simplifyDenominatorIsDivision:first denominator:(MTOperator*) second];
         }
     }
     return expr;
 }
 
 // (a/b) / c becomes a / (b*c)
-- (Expression*) simplifyNumeratorIsDivision:(FXOperator*) numerator denominator:(Expression*) denominator
+- (MTExpression*) simplifyNumeratorIsDivision:(MTOperator*) numerator denominator:(MTExpression*) denominator
 {
-    NSAssert(numerator.type == kDivision, @"Expected numerator to be division");
+    NSAssert(numerator.type == kMTDivision, @"Expected numerator to be division");
     NSAssert(numerator.children.count == 2, @"Division can only have 2 arguments");
     
-    Expression* nFirst = numerator.children[0];
-    Expression* nSecond = numerator.children[1];
+    MTExpression* nFirst = numerator.children[0];
+    MTExpression* nSecond = numerator.children[1];
     
-    FXOperator* newDenominator = [FXOperator operatorWithType:kMultiplication args:nSecond :denominator];
-    return [FXOperator operatorWithType:kDivision args:nFirst :newDenominator];
+    MTOperator* newDenominator = [MTOperator operatorWithType:kMTMultiplication args:nSecond :denominator];
+    return [MTOperator operatorWithType:kMTDivision args:nFirst :newDenominator];
 }
 
 // a / (b/c) becomes (a*c) / b
-- (Expression*) simplifyDenominatorIsDivision:(Expression*) numerator denominator:(FXOperator*) denominator
+- (MTExpression*) simplifyDenominatorIsDivision:(MTExpression*) numerator denominator:(MTOperator*) denominator
 {
-    NSAssert(denominator.type == kDivision, @"Expected numerator to be division");
+    NSAssert(denominator.type == kMTDivision, @"Expected numerator to be division");
     NSAssert(denominator.children.count == 2, @"Division can only have 2 arguments");
     
-    Expression* dFirst = denominator.children[0];
-    Expression* dSecond = denominator.children[1];
+    MTExpression* dFirst = denominator.children[0];
+    MTExpression* dSecond = denominator.children[1];
     
-    FXOperator* newNumerator = [FXOperator operatorWithType:kMultiplication args:numerator :dSecond];
-    return [FXOperator operatorWithType:kDivision args:newNumerator :dFirst];
+    MTOperator* newNumerator = [MTOperator operatorWithType:kMTMultiplication args:numerator :dSecond];
+    return [MTOperator operatorWithType:kMTDivision args:newNumerator :dFirst];
 }
 
 

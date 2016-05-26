@@ -9,19 +9,19 @@
 //
 
 #import "RationalAdditionRule.h"
-#import "Expression.h"
-#import "ExpressionUtil.h"
+#import "MTExpression.h"
+#import "MTExpressionUtil.h"
 
 @implementation RationalAdditionRule
 
-- (Expression*) applyToTopLevelNode:(Expression *)expr withChildren:(NSArray *)args
+- (MTExpression*) applyToTopLevelNode:(MTExpression *)expr withChildren:(NSArray *)args
 {
-    if ([ExpressionUtil isAddition:expr]) {
-        FXOperator* division = nil;
+    if ([MTExpressionUtil isAddition:expr]) {
+        MTOperator* division = nil;
         NSMutableArray* addends = [NSMutableArray arrayWithCapacity:args.count];
-        for (Expression* arg in args) {
-            if (division == nil && [ExpressionUtil isDivision:arg]) {
-                division = (FXOperator*) arg;
+        for (MTExpression* arg in args) {
+            if (division == nil && [MTExpressionUtil isDivision:arg]) {
+                division = (MTOperator*) arg;
             } else {
                 [addends addObject:arg];
             }
@@ -31,19 +31,19 @@
             // Add all the addends together.
             // a/b + c => (a + (b*c)) / b. mulitplier is c.
             NSAssert(addends.count > 0, @"There should be at least one addend");
-            FXOperator* multiplier;
+            MTOperator* multiplier;
             if (addends.count == 1) {
                 multiplier = addends[0];
             } else {
-                multiplier = [FXOperator operatorWithType:kAddition args:addends];
+                multiplier = [MTOperator operatorWithType:kMTAddition args:addends];
             }
             NSAssert(division.children.count == 2, @"Division should have exactly 2 children");
-            Expression* numerator = division.children[0];
-            Expression* denominator = division.children[1];
+            MTExpression* numerator = division.children[0];
+            MTExpression* denominator = division.children[1];
             // a/b + c => (a + (b*c)) / b. numeratorAddend is b*c.
-            FXOperator* numeratorAddend = [FXOperator operatorWithType:kMultiplication args:denominator :multiplier];
-            FXOperator* newNumerator = [FXOperator operatorWithType:kAddition args:numerator :numeratorAddend];
-            return [FXOperator operatorWithType:kDivision args:newNumerator :denominator];
+            MTOperator* numeratorAddend = [MTOperator operatorWithType:kMTMultiplication args:denominator :multiplier];
+            MTOperator* newNumerator = [MTOperator operatorWithType:kMTAddition args:numerator :numeratorAddend];
+            return [MTOperator operatorWithType:kMTDivision args:newNumerator :denominator];
         }
     }
     return expr;

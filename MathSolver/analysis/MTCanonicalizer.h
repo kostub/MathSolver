@@ -8,53 +8,53 @@
 //  MIT license. See the LICENSE file for details.
 
 #import <Foundation/Foundation.h>
-#import "Expression.h"
+#import "MTExpression.h"
 
 @class ExpressionCanonicalizer;
 @class EquationCanonicalizer;
 
-@protocol Canonicalizer <NSObject>
+@protocol MTCanonicalizer <NSObject>
 
 // Normalize the expression by removing -ves and extra parenthesis.
-- (id<MathEntity>) normalize: (id<MathEntity>) ex;
+- (id<MTMathEntity>) normalize: (id<MTMathEntity>) ex;
 
 // Convert the expression to its normal form polynomial representation
 // It assumes that the expression is already normalized using the function above.
 // i.e. axx + bx +  c
-- (id<MathEntity>) normalForm: (id<MathEntity>) ex;
+- (id<MTMathEntity>) normalForm: (id<MTMathEntity>) ex;
 
 @end
 
 @interface CanonicalizerFactory : NSObject
 
 // Returns the singleton instance of a canonicalizer applicable to the given entity
-+ (id<Canonicalizer>) getCanonicalizer:(id<MathEntity>) entity;
++ (id<MTCanonicalizer>) getCanonicalizer:(id<MTMathEntity>) entity;
 
 + (ExpressionCanonicalizer*) getExpressionCanonicalizer;
 + (EquationCanonicalizer*) getEquationCanonicalizer;
 
 @end
 
-@interface ExpressionCanonicalizer : NSObject<Canonicalizer>
+@interface ExpressionCanonicalizer : NSObject<MTCanonicalizer>
 
 // Normalize the expression by removing -ves and extra parenthesis.
-- (Expression*) normalize: (Expression*) ex;
+- (MTExpression*) normalize: (MTExpression*) ex;
 
 // Convert the expression to its normal form polynomial representation
 // It assumes that the expression is already normalized using the function above.
 // i.e. axx + bx +  c
-- (Expression*) normalForm: (Expression*) ex;
+- (MTExpression*) normalForm: (MTExpression*) ex;
 
 @end
 
-@interface EquationCanonicalizer : NSString<Canonicalizer>
+@interface EquationCanonicalizer : NSString<MTCanonicalizer>
 
 // Normalize the expression by removing -ves and extra parenthesis.
-- (Equation*) normalize: (Equation*) ex;
+- (MTEquation*) normalize: (MTEquation*) ex;
 
 // Convert the expression to its normal form equaton representation
 // It assumes that the expression is already normalized using the function above.
 // i.e. xx + bx +  c = 0, with the leading coefficient always 1
-- (Equation*) normalForm: (Equation*) ex;
+- (MTEquation*) normalForm: (MTEquation*) ex;
 
 @end

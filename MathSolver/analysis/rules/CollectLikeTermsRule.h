@@ -9,11 +9,11 @@
 //
 
 #import "Rule.h"
-#import "Expression.h"
+#import "MTExpression.h"
 
 // Collects all terms with the same variables together and adds their coefficients.
 @interface CollectLikeTermsRule : Rule
 
-- (Expression*) applyToTopLevelNode:(Expression *)expr withChildren:(NSArray *)args;
+- (MTExpression*) applyToTopLevelNode:(MTExpression *)expr withChildren:(NSArray *)args;
 
 @end

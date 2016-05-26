@@ -9,18 +9,18 @@
 //
 
 #import "DivisionIdentityRule.h"
-#import "Expression.h"
-#import "ExpressionUtil.h"
+#import "MTExpression.h"
+#import "MTExpressionUtil.h"
 
 @implementation DivisionIdentityRule
 
-- (Expression*) applyToTopLevelNode:(Expression *)expr withChildren:(NSArray *)args
+- (MTExpression*) applyToTopLevelNode:(MTExpression *)expr withChildren:(NSArray *)args
 {
-    if ([ExpressionUtil isDivision:expr]) {
+    if ([MTExpressionUtil isDivision:expr]) {
         NSAssert(args.count == 2, @"A division can only have 2 arguments.");
-        Expression* first = args[0];
-        Expression* second = args[1];
-        if ([second isEqual:[ExpressionUtil getIdentity:kMultiplication]]) {
+        MTExpression* first = args[0];
+        MTExpression* second = args[1];
+        if ([second isEqual:[MTExpressionUtil getIdentity:kMTMultiplication]]) {
             return first;
         }
     }

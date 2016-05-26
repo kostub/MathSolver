@@ -11,11 +11,11 @@
 #import <Foundation/Foundation.h>
 #import "Rule.h"
 
-@class Expression;
+@class MTExpression;
 
 // Flattens operators from binary to n-ary.
 @interface FlattenRule : Rule
 
-- (Expression*) applyToTopLevelNode:(Expression *)expr withChildren:(NSArray *)args;
+- (MTExpression*) applyToTopLevelNode:(MTExpression *)expr withChildren:(NSArray *)args;
 
 @end

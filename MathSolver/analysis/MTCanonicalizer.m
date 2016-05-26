@@ -8,7 +8,7 @@
 //  MIT license. See the LICENSE file for details.
 //
 
-#import "Canonicalizer.h"
+#import "MTCanonicalizer.h"
 #import "RemoveNegativesRule.h"
 #import "FlattenRule.h"
 #import "CalculateRule.h"
@@ -17,7 +17,7 @@
 #import "ZeroRule.h"
 #import "CollectLikeTermsRule.h"
 #import "ReorderTermsRule.h"
-#import "ExpressionUtil.h"
+#import "MTExpressionUtil.h"
 #import "ReduceRule.h"
 #import "NullRule.h"
 #import "NestedDivisionRule.h"
@@ -25,18 +25,18 @@
 #import "CancelCommonFactorsRule.h"
 #import "RationalMultiplicationRule.h"
 
-@class Expression;
+@class MTExpression;
 
 @implementation CanonicalizerFactory
 
-+ (id<Canonicalizer>)getCanonicalizer:(id<MathEntity>)entity
++ (id<MTCanonicalizer>)getCanonicalizer:(id<MTMathEntity>)entity
 {
     switch (entity.entityType) {
-        case kFXEquation:
+        case kMTEquation:
             return [self getEquationCanonicalizer];
-        case kFXExpression:
+        case kMTExpression:
             return [self getExpressionCanonicalizer];
-        case kFXTypeAny:
+        case kMTTypeAny:
             NSAssert(false, @"An actual entity with type any: %@", entity);
             return nil;
     }
@@ -105,67 +105,67 @@
 }
 
 // Normalize the expression by removing -ves and extra parenthesis.
-- (Expression*) normalize: (Expression*) ex
+- (MTExpression*) normalize: (MTExpression*) ex
 {
     return [_flatten apply:[_removeNegatives apply:ex]];
 }
 
 // Canonicalize the expression to its polynomial representation
 // i.e. axx + bx +  c
-- (Expression*) normalForm: (Expression*) ex {
-    Expression* rationalForm = [self applyRules:_divisionRules toExpression:ex];
+- (MTExpression*) normalForm: (MTExpression*) ex {
+    MTExpression* rationalForm = [self applyRules:_divisionRules toExpression:ex];
     // rationalForm should be of the form polynomial / polynomial
     DLog(@"Rational form: %@", rationalForm);
-    if ([ExpressionUtil isDivision:rationalForm]) {
+    if ([MTExpressionUtil isDivision:rationalForm]) {
         NSAssert(rationalForm.children.count == 2, @"Rational form should only have 2 children");
-        Expression* numerator = rationalForm.children[0];
-        Expression* denominator = rationalForm.children[1];
+        MTExpression* numerator = rationalForm.children[0];
+        MTExpression* denominator = rationalForm.children[1];
         // canonical form for each polynomial
-        Expression* canonicalDenonimator = [self canonicalFormForPolynomial:denominator];
+        MTExpression* canonicalDenonimator = [self canonicalFormForPolynomial:denominator];
         // We make always make the leading coefficient of the denominator 1.
-        Rational* leadingCoefficient = [self getLeadingCoefficient:canonicalDenonimator];
+        MTRational* leadingCoefficient = [self getLeadingCoefficient:canonicalDenonimator];
         canonicalDenonimator = [self dividePolynomial:canonicalDenonimator byLeadingCoefficient:leadingCoefficient];
-        Expression* canonicalNumerator = [self dividePolynomial:numerator byLeadingCoefficient:leadingCoefficient];
-        return [FXOperator operatorWithType:kDivision args:canonicalNumerator :canonicalDenonimator];
+        MTExpression* canonicalNumerator = [self dividePolynomial:numerator byLeadingCoefficient:leadingCoefficient];
+        return [MTOperator operatorWithType:kMTDivision args:canonicalNumerator :canonicalDenonimator];
     } else {
         // canonical form for the polynomial
         return [self canonicalFormForPolynomial:rationalForm];
     }
 }
 
-- (Rational*) getLeadingCoefficient:(Expression*) normalPolynomial
+- (MTRational*) getLeadingCoefficient:(MTExpression*) normalPolynomial
 {
-    Expression* leadingTerm = [ExpressionUtil getLeadingTerm:normalPolynomial];
+    MTExpression* leadingTerm = [MTExpressionUtil getLeadingTerm:normalPolynomial];
     // get the coefficient of the leading term
-    Rational* coefficient;
+    MTRational* coefficient;
     NSArray* variables;
-    BOOL rv = [ExpressionUtil expression:leadingTerm getCoefficent:&coefficient variables:&variables];
+    BOOL rv = [MTExpressionUtil expression:leadingTerm getCoefficent:&coefficient variables:&variables];
     NSAssert(rv, @"Normalized expression leading term %@ not of the form Nxyz for expression %@", leadingTerm, normalPolynomial);
     return coefficient;
 }
 
-- (Expression*) dividePolynomial:(Expression*) expr byLeadingCoefficient:(Rational*) coefficient
+- (MTExpression*) dividePolynomial:(MTExpression*) expr byLeadingCoefficient:(MTRational*) coefficient
 {
     // divide by the leading coefficient
-    Expression* dividedExpr = [FXOperator operatorWithType:kDivision args:expr :[FXNumber numberWithValue:coefficient]];
+    MTExpression* dividedExpr = [MTOperator operatorWithType:kMTDivision args:expr :[MTNumber numberWithValue:coefficient]];
     return [self canonicalFormForPolynomial:dividedExpr];
 }
 
-- (Expression*) canonicalFormForPolynomial:(Expression*) poly
+- (MTExpression*) canonicalFormForPolynomial:(MTExpression*) poly
 {
-    Expression* normalFormPoly = [self applyRules:_canonicalizingRules toExpression:poly];
+    MTExpression* normalFormPoly = [self applyRules:_canonicalizingRules toExpression:poly];
     // Order the terms to be in the canonical order.
     return [_reorder apply:normalFormPoly];
 }
 
-- (Expression*) applyRules:(NSArray*) rules toExpression:(Expression*) ex
+- (MTExpression*) applyRules:(NSArray*) rules toExpression:(MTExpression*) ex
 {
-    Expression* current = ex;
+    MTExpression* current = ex;
     BOOL modifed = YES;
     while (modifed) {
         modifed = NO;
         for (Rule* rule in rules) {
-            Expression* next = [rule apply:current];
+            MTExpression* next = [rule apply:current];
             if (next != current) {
                 modifed = YES;
                 current = next;
@@ -181,37 +181,37 @@
 
 @implementation EquationCanonicalizer
 
-- (Equation *)normalize:(Equation *)eq
+- (MTEquation *)normalize:(MTEquation *)eq
 {
     ExpressionCanonicalizer* expCanon = [CanonicalizerFactory getExpressionCanonicalizer];
-    Expression* normalizedLhs = [expCanon normalize:eq.lhs];
-    Expression* normalizedRhs = [expCanon normalize:eq.rhs];
-    return [Equation equationWithRelation:eq.relation lhs:normalizedLhs rhs:normalizedRhs];
+    MTExpression* normalizedLhs = [expCanon normalize:eq.lhs];
+    MTExpression* normalizedRhs = [expCanon normalize:eq.rhs];
+    return [MTEquation equationWithRelation:eq.relation lhs:normalizedLhs rhs:normalizedRhs];
 }
 
-- (Equation *)normalForm:(Equation *)eq
+- (MTEquation *)normalForm:(MTEquation *)eq
 {
-    Expression* newLhs = [FXOperator operatorWithType:kSubtraction args:eq.lhs :eq.rhs];
+    MTExpression* newLhs = [MTOperator operatorWithType:kMTSubtraction args:eq.lhs :eq.rhs];
     ExpressionCanonicalizer* expCanon = [CanonicalizerFactory getExpressionCanonicalizer];
-    Expression* normalizedNewLhs = [expCanon normalize:newLhs];
-    Expression* normalForm = [expCanon normalForm:normalizedNewLhs];
+    MTExpression* normalizedNewLhs = [expCanon normalize:newLhs];
+    MTExpression* normalForm = [expCanon normalForm:normalizedNewLhs];
     
-    if (normalForm.expressionType == kFXNull) {
+    if (normalForm.expressionType == kMTExpressionTypeNull) {
         InfoLog(@"Equation mathematically invalid: %@", eq);
-        return [Equation equationWithRelation:eq.relation lhs:normalForm rhs:[FXNumber numberWithValue:[Rational zero]]];
+        return [MTEquation equationWithRelation:eq.relation lhs:normalForm rhs:[MTNumber numberWithValue:[MTRational zero]]];
     }
 
-    Expression* lhsExpression = normalForm;
-    if ([ExpressionUtil isDivision:normalForm]) {
+    MTExpression* lhsExpression = normalForm;
+    if ([MTExpressionUtil isDivision:normalForm]) {
         // its a rational expression. We can ignore the denominator since it multiplies with 0.
         NSAssert(normalForm.children.count == 2, @"Division should have 2 children");
         lhsExpression = normalForm.children[0];
     }
     
-    Rational* coefficient = [expCanon getLeadingCoefficient:lhsExpression];
+    MTRational* coefficient = [expCanon getLeadingCoefficient:lhsExpression];
     lhsExpression = [expCanon dividePolynomial:lhsExpression byLeadingCoefficient:coefficient];
     
-    return [Equation equationWithRelation:eq.relation lhs:lhsExpression rhs:[FXNumber numberWithValue:[Rational zero]]];
+    return [MTEquation equationWithRelation:eq.relation lhs:lhsExpression rhs:[MTNumber numberWithValue:[MTRational zero]]];
 }
 
 @end

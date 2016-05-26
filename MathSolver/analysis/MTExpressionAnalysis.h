@@ -9,12 +9,12 @@
 
 #import <Foundation/Foundation.h>
 
-#import "ExpressonInfo.h"
+#import "MTExpressionInfo.h"
 
-@interface ExpressionAnalysis : NSObject
+@interface MTExpressionAnalysis : NSObject
 
-+ (BOOL)hasCheckableAnswer:(ExpressionInfo*) start;
++ (BOOL)hasCheckableAnswer:(MTExpressionInfo*) start;
 
-+ (BOOL) isExpressionFinalStep:(ExpressionInfo*) expressionInfo forEntityType:(MathEntityType) originalEntityType;
++ (BOOL) isExpressionFinalStep:(MTExpressionInfo*) expressionInfo forEntityType:(MTMathEntityType) originalEntityType;
 
 @end

@@ -13,6 +13,6 @@
 // Performs arithmetic calculations.
 @interface CalculateRule : Rule
 
-- (Expression*) applyToTopLevelNode:(Expression *)expr withChildren:(NSArray *)args;
+- (MTExpression*) applyToTopLevelNode:(MTExpression *)expr withChildren:(NSArray *)args;
 
 @end

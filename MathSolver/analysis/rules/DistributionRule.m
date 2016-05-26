@@ -9,37 +9,37 @@
 //
 
 #import "DistributionRule.h"
-#import "Expression.h"
+#import "MTExpression.h"
 
 @implementation DistributionRule
 
 // Distrubution distributes multiplication over addition ie. A*(B+C) becomes A*B + A*C
 // This rule does distribution from both left and right.
-- (Expression*) applyToTopLevelNode:(Expression *)expr withChildren:(NSArray *)args {
-    if (expr.expressionType != kFXOperator) {
+- (MTExpression*) applyToTopLevelNode:(MTExpression *)expr withChildren:(NSArray *)args {
+    if (expr.expressionType != kMTExpressionTypeOperator) {
         return expr;
     }
-    FXOperator *oper = (FXOperator *) expr;
+    MTOperator *oper = (MTOperator *) expr;
     NSMutableArray* leftMultipliers = [NSMutableArray array];
     NSMutableArray* rightMultipliers = [NSMutableArray array];
     
-    FXOperator* distributee = [DistributionRule findDistributee:oper withArgs:args leftMultipliers:leftMultipliers rightMultiplers:rightMultipliers];
+    MTOperator* distributee = [DistributionRule findDistributee:oper withArgs:args leftMultipliers:leftMultipliers rightMultiplers:rightMultipliers];
     if (!distributee) {
         return expr;
     }
     
     NSMutableArray *newArgs = [NSMutableArray arrayWithCapacity:[distributee.children count]];
-    for (Expression *arg in distributee.children) {
+    for (MTExpression *arg in distributee.children) {
         NSMutableArray *multiplicationArgs = [NSMutableArray arrayWithArray:leftMultipliers];
         [multiplicationArgs addObject:arg];
         [multiplicationArgs addObjectsFromArray:rightMultipliers];
-        [newArgs addObject:[FXOperator operatorWithType:kMultiplication args:multiplicationArgs]];
+        [newArgs addObject:[MTOperator operatorWithType:kMTMultiplication args:multiplicationArgs]];
     }
-    return [FXOperator operatorWithType:kAddition args:newArgs];
+    return [MTOperator operatorWithType:kMTAddition args:newArgs];
 }
 
 // Returns nil if it cannot find a distributee.
-+ (FXOperator*) findDistributee:(Expression*)op withArgs:(NSArray*) args leftMultipliers:(NSMutableArray*) leftMultipliers rightMultiplers:(NSMutableArray*) rightMultipliers
++ (MTOperator*) findDistributee:(MTExpression*)op withArgs:(NSArray*) args leftMultipliers:(NSMutableArray*) leftMultipliers rightMultiplers:(NSMutableArray*) rightMultipliers
 {
     if (![DistributionRule isDistributableOperator:op]) {
         return nil;
@@ -52,12 +52,12 @@
     // If there are more than 2 args all will be distributed, so
     // a * (b + c) * d will become a * b * d + a * c * d.
     
-    FXOperator *distributee = nil;
+    MTOperator *distributee = nil;
     
-    for (Expression *arg in args) {
+    for (MTExpression *arg in args) {
         // Find an arg to distribute on
         if (!distributee && [DistributionRule isDistributee:arg]) {
-            distributee = (FXOperator*) arg;
+            distributee = (MTOperator*) arg;
             continue;
         }
         // For everything else, add them to the left or right multipliers as appropriate.
@@ -70,31 +70,31 @@
     return distributee;
 }
 
-+(BOOL) isDistributee:(Expression*) expr
++(BOOL) isDistributee:(MTExpression*) expr
 {
     // We can only distribute over addition
-    return expr.expressionType == kFXOperator && [expr equalsExpressionValue:kAddition];
+    return expr.expressionType == kMTExpressionTypeOperator && [expr equalsExpressionValue:kMTAddition];
 }
 
-+(BOOL) isDistributableOperator:(Expression *)expr
++(BOOL) isDistributableOperator:(MTExpression *)expr
 {
     // Only multiplication operators can have distributees
-    return expr.expressionType == kFXOperator && [expr equalsExpressionValue:kMultiplication];
+    return expr.expressionType == kMTExpressionTypeOperator && [expr equalsExpressionValue:kMTMultiplication];
 }
 
-+(BOOL) canDistribute:(Expression*) expr
++(BOOL) canDistribute:(MTExpression*) expr
 {
     return [self findDistributee:expr withArgs:expr.children leftMultipliers:nil rightMultiplers:nil] != nil;
 }
 
-+(NSArray*) getDistributees:(Expression*) expr
++(NSArray*) getDistributees:(MTExpression*) expr
 {
     if (![self isDistributableOperator:expr]) {
         return nil;
     }
     
     NSMutableArray* array = [NSMutableArray array];
-    for (Expression* arg in expr.children) {
+    for (MTExpression* arg in expr.children) {
         if ([self isDistributee:arg]) {
             [array addObject:arg];
         }

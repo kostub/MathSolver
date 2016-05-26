@@ -8,12 +8,12 @@
 //  MIT license. See the LICENSE file for details.
 //
 
-#import "ExpressonInfo.h"
-#import "Canonicalizer.h"
+#import "MTExpressionInfo.h"
+#import "MTCanonicalizer.h"
 
-@implementation ExpressionInfo
+@implementation MTExpressionInfo
 
-- (id)initWithExpression:(id<MathEntity>)expression input:(MTMathList *)input
+- (id)initWithExpression:(id<MTMathEntity>)expression input:(MTMathList *)input
 {
     return [self initWithExpression:expression input:input variable:nil];
 }
@@ -23,12 +23,12 @@
     return [self initWithExpression:nil input:nil variable:variable];
 }
 
-- (id)initWithExpression:(id<MathEntity>)expression input:(MTMathList *)input variable:(NSString *)variable
+- (id)initWithExpression:(id<MTMathEntity>)expression input:(MTMathList *)input variable:(NSString *)variable
 {
     self = [super init];
     if (self) {
         if (expression) {
-            id<Canonicalizer> canonicalizer = [CanonicalizerFactory getCanonicalizer:expression];
+            id<MTCanonicalizer> canonicalizer = [CanonicalizerFactory getCanonicalizer:expression];
             _original = expression;
             _normalized = [canonicalizer normalize:expression];
             _normalForm = [canonicalizer normalForm:_normalized];

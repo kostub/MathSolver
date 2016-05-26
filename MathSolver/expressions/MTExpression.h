@@ -10,26 +10,26 @@
 
 #import <Foundation/Foundation.h>
 
-#import "Rational.h"
+#import "MTRational.h"
 #import "MTMathListIndex.h"
 
-extern const char kUnaryMinus;
-extern const char kSubtraction;
-extern const char kAddition;
-extern const char kMultiplication;
-extern const char kDivision;
+extern const char kMTUnaryMinus;
+extern const char kMTSubtraction;
+extern const char kMTAddition;
+extern const char kMTMultiplication;
+extern const char kMTDivision;
 
 typedef enum {
-    kFXTypeAny = 0,
-    kFXExpression,
-    kFXEquation,
-} MathEntityType;
+    kMTTypeAny = 0,
+    kMTExpression,
+    kMTEquation,
+} MTMathEntityType;
 
-@protocol MathEntity <NSObject>
+@protocol MTMathEntity <NSObject>
 
 - (NSString*) stringValue;
 
-- (MathEntityType) entityType;
+- (MTMathEntityType) entityType;
 
 /**
  * Returns true if the two entities are to be considered equivalent for the purposes.
@@ -37,17 +37,17 @@ typedef enum {
  * equivalent even though they may not be equal. e.g. 0.33 and 1/3.
  * @param entity The entity to compare with.
  */
-- (BOOL) isEquivalent:(id<MathEntity>) entity;
+- (BOOL) isEquivalent:(id<MTMathEntity>) entity;
 
 @end
 
-@interface Expression : NSObject<MathEntity>
+@interface MTExpression : NSObject<MTMathEntity>
 
-enum ExpressionType {
-    kFXNumber = 1,
-    kFXVariable,
-    kFXOperator,
-    kFXNull,
+enum MTExpressionType {
+    kMTExpressionTypeNumber = 1,
+    kMTExpressionTypeVariable,
+    kMTExpressionTypeOperator,
+    kMTExpressionTypeNull,
 };
 
 // The range in the original MTMathList that created it, that this expression denotes.
@@ -55,7 +55,7 @@ enum ExpressionType {
 @property (nonatomic, readonly) MTMathListRange* range;
 
 // Returns a copy of the expression with the given range.
-- (Expression*) expressionWithRange:(MTMathListRange*) range;
+- (MTExpression*) expressionWithRange:(MTMathListRange*) range;
 
 // The children of this expression, all of whom are expressions themselves.
 - (NSArray*) children;
@@ -66,7 +66,7 @@ enum ExpressionType {
 // If the expression has a degree. If hasDegree returns false, do not call degree. The result may be unpredictable.
 - (BOOL) hasDegree;
 
-- (enum ExpressionType) expressionType;
+- (enum MTExpressionType) expressionType;
 
 - (id) expressionValue;
 
@@ -74,67 +74,67 @@ enum ExpressionType {
 - (BOOL) equalsExpressionValue:(int) value;
 - (BOOL) isExpressionValueEqualToNumber:(NSNumber*) number;
 
-- (BOOL) isEqualUptoRearrangement:(Expression*) expr;
+- (BOOL) isEqualUptoRearrangement:(MTExpression*) expr;
 
 // Same as above but recursive
-- (BOOL) isEqualUptoRearrangementRecursive:(Expression*) expr;
+- (BOOL) isEqualUptoRearrangementRecursive:(MTExpression*) expr;
 
 @end
 
 
-@interface FXNumber : Expression
+@interface MTNumber : MTExpression
 
-@property (nonatomic, readonly) Rational* value;
+@property (nonatomic, readonly) MTRational* value;
 
-+(id) numberWithValue:(Rational*) value;
-+(id) numberWithValue:(Rational*) value range:(MTMathListRange*) range;
++(id) numberWithValue:(MTRational*) value;
++(id) numberWithValue:(MTRational*) value range:(MTMathListRange*) range;
 
-- (BOOL) isEqualToNumber:(FXNumber*) number;
-- (NSComparisonResult) compare: (FXNumber*) aNumber;
+- (BOOL) isEqualToNumber:(MTNumber*) number;
+- (NSComparisonResult) compare: (MTNumber*) aNumber;
 
 @end
 
-@interface FXVariable : Expression
+@interface MTVariable : MTExpression
 
 @property (nonatomic, readonly) char name;
 
 +(id) variableWithName:(char) name;
 +(id) variableWithName:(char) name range:(MTMathListRange*) range;
 
-- (NSComparisonResult) compare: (FXVariable*) aVariable;
+- (NSComparisonResult) compare: (MTVariable*) aVariable;
 
 @end
 
-@interface FXOperator : Expression
+@interface MTOperator : MTExpression
 
 @property (nonatomic, readonly) char type;
 
 // binary
-+(id) operatorWithType:(char)type args:(Expression *)arg1 :(Expression *)arg2 range:(MTMathListRange*)range;
-+(id) operatorWithType:(char) type args:(Expression*) arg1 :(Expression*) arg2;
++(id) operatorWithType:(char)type args:(MTExpression *)arg1 :(MTExpression *)arg2 range:(MTMathListRange*)range;
++(id) operatorWithType:(char) type args:(MTExpression*) arg1 :(MTExpression*) arg2;
 
 // unary
-+(id) unaryOperatorWithType:(char) type arg:(Expression*) arg range:(MTMathListRange*) range;
++(id) unaryOperatorWithType:(char) type arg:(MTExpression*) arg range:(MTMathListRange*) range;
 
 +(id) operatorWithType:(char)type args:(NSArray*) args;
 +(id) operatorWithType:(char)type args:(NSArray*) args range:(MTMathListRange*) range;
 
 @end
 
-@interface FXNull : Expression
+@interface MTNull : MTExpression
 
 // Returns the singleton FXNull object
 + (instancetype) null;
 
 @end
 
-@interface Equation : NSObject<MathEntity>
+@interface MTEquation : NSObject<MTMathEntity>
 
-+(id) equationWithRelation:(char) relation lhs:(Expression *)lhs rhs:(Expression*) rhs;
++(id) equationWithRelation:(char) relation lhs:(MTExpression *)lhs rhs:(MTExpression*) rhs;
 
 @property (nonatomic, readonly) char relation;   // = > < etc.
 
-@property (nonatomic, readonly) Expression* lhs;
-@property (nonatomic, readonly) Expression* rhs;
+@property (nonatomic, readonly) MTExpression* lhs;
+@property (nonatomic, readonly) MTExpression* rhs;
 
 @end

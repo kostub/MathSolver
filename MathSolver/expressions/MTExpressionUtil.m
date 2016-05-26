@@ -8,11 +8,11 @@
 //  MIT license. See the LICENSE file for details.
 //
 
-#import "ExpressionUtil.h"
+#import "MTExpressionUtil.h"
 #import "CalculateRule.h"
 #import "IdentityRule.h"
 #import "ReduceRule.h"
-#import "Canonicalizer.h"
+#import "MTCanonicalizer.h"
 
 static CalculateRule *_calc;
 static IdentityRule *_identity;
@@ -31,18 +31,18 @@ static Rule* getIdentityRule() {
     return _identity;
 }
 
-@implementation ExpressionUtil
+@implementation MTExpressionUtil
 
-+ (FXOperator*) negate:(Expression *)expr
++ (MTOperator*) negate:(MTExpression *)expr
 {
-    return [FXOperator operatorWithType:kMultiplication args:[FXNumber numberWithValue:[Rational one].negation range:expr.range] :expr range:expr.range];
+    return [MTOperator operatorWithType:kMTMultiplication args:[MTNumber numberWithValue:[MTRational one].negation range:expr.range] :expr range:expr.range];
 }
 
-+ (BOOL) expression: (Expression*) expr getCoefficent:(Rational**) c variables:(NSArray**) vars
++ (BOOL) expression: (MTExpression*) expr getCoefficent:(MTRational**) c variables:(NSArray**) vars
 {
     switch (expr.expressionType) {
-        case kFXNumber: {
-            FXNumber *numberArg = (FXNumber *) expr;
+        case kMTExpressionTypeNumber: {
+            MTNumber *numberArg = (MTNumber *) expr;
             if (c) {
                 *c = numberArg.value;
             }
@@ -51,30 +51,30 @@ static Rule* getIdentityRule() {
             }
             return true;
         }
-        case kFXVariable: {
+        case kMTExpressionTypeVariable: {
             if (c) {
-                *c = [Rational one];
+                *c = [MTRational one];
             }
             if (vars) {
                 *vars = [NSArray arrayWithObject:expr];
             }
             return true;
         }
-        case kFXOperator: {
-            FXOperator* oper = (FXOperator*) expr;
-            if (oper.type != kMultiplication) {
+        case kMTExpressionTypeOperator: {
+            MTOperator* oper = (MTOperator*) expr;
+            if (oper.type != kMTMultiplication) {
                 // none of the other operators are of this form
                 return NO;
             }
             // we require that there be exactly one FXNumber and no operators as children
             BOOL numberFound = NO;
-            FXNumber *coefficient = nil;
+            MTNumber *coefficient = nil;
             NSMutableArray* mutableVars = [NSMutableArray array];
-            for (Expression* childArg in oper.children) {
-                if ([childArg isKindOfClass:[FXNumber class]] && !numberFound) {
+            for (MTExpression* childArg in oper.children) {
+                if ([childArg isKindOfClass:[MTNumber class]] && !numberFound) {
                     numberFound = YES;
-                    coefficient = (FXNumber *)childArg;
-                } else if ([childArg isKindOfClass:[FXVariable class]]) {
+                    coefficient = (MTNumber *)childArg;
+                } else if ([childArg isKindOfClass:[MTVariable class]]) {
                     [mutableVars addObject:childArg];
                 } else {
                     // arg is notof the form we are looking for.
@@ -84,7 +84,7 @@ static Rule* getIdentityRule() {
             // at this point the operator is combinable, we need to find out what variables to combine by and the coefficient.
             // if we found a coefficent then get its value, otherwise the default is 1.
             if (c) {
-                *c = (coefficient) ? coefficient.value : [Rational one];
+                *c = (coefficient) ? coefficient.value : [MTRational one];
             }
             if (vars) {
                 // sort the variables by name
@@ -94,15 +94,15 @@ static Rule* getIdentityRule() {
             return YES;
         }
             
-        case kFXNull: {
+        case kMTExpressionTypeNull: {
             return NO;
         }
     }
 }
 
-+ (Expression *)absoluteValue:(Expression *)expr
++ (MTExpression *)absoluteValue:(MTExpression *)expr
 {
-    Rational* coeff;
+    MTRational* coeff;
     NSArray* vars;
     if (![self expression:expr getCoefficent:&coeff variables:&vars]) {
         // Not of required form, can't take the absolute value.
@@ -112,15 +112,15 @@ static Rule* getIdentityRule() {
         return expr;
     } else {
         // Normalize this to remove the -ve sign. (Calculation and removal of identity are the only things that should happen)
-        id<Canonicalizer> canon = [CanonicalizerFactory getExpressionCanonicalizer];
-        Expression* normalized = [canon normalize:[self negate:expr]];
+        id<MTCanonicalizer> canon = [CanonicalizerFactory getExpressionCanonicalizer];
+        MTExpression* normalized = [canon normalize:[self negate:expr]];
         return [canon normalForm:normalized];
     }
 }
 
-+ (NSString*) formatAsString:(Expression*) expr
++ (NSString*) formatAsString:(MTExpression*) expr
 {
-    Rational* coeff;
+    MTRational* coeff;
     NSArray* vars;
     if (![self expression:expr getCoefficent:&coeff variables:&vars]) {
         // Not of required form, can't format
@@ -129,27 +129,27 @@ static Rule* getIdentityRule() {
     return [NSString stringWithFormat:@"%@%@", coeff, [vars componentsJoinedByString:@""]];
 }
 
-+ (BOOL) isEquivalentUptoCalculation:(Expression*) expr toExpression:(Expression*) other
++ (BOOL) isEquivalentUptoCalculation:(MTExpression*) expr toExpression:(MTExpression*) other
 {
     if ([expr isEqualUptoRearrangement:other]) {
         return true;
     }
     Rule* calculate = getCalculateRule();
-    Expression* calculatedTerm = [calculate applyToTopLevelNode:expr withChildren:expr.children];
+    MTExpression* calculatedTerm = [calculate applyToTopLevelNode:expr withChildren:expr.children];
     if ([calculatedTerm isEqualUptoRearrangement:other]) {
         return true;
     }
     
     // Reduce fractions in the expression if any
     Rule* reduceRule = [ReduceRule rule];
-    Expression* fractionsReduced = [reduceRule apply:calculatedTerm];
+    MTExpression* fractionsReduced = [reduceRule apply:calculatedTerm];
     if (fractionsReduced != calculatedTerm && [fractionsReduced isEqualUptoRearrangement:other]) {
         return true;
     }
     
     // apply the identity rule to strip away any 1s.
     Rule* identity = getIdentityRule();
-    Expression* identityRemovedTerm = [identity applyToTopLevelNode:fractionsReduced withChildren:fractionsReduced.children];
+    MTExpression* identityRemovedTerm = [identity applyToTopLevelNode:fractionsReduced withChildren:fractionsReduced.children];
     if (identityRemovedTerm != fractionsReduced && [identityRemovedTerm isEqualUptoRearrangement:other]) {
         return true;
     }
@@ -157,9 +157,9 @@ static Rule* getIdentityRule() {
     return false;
 }
 
-+ (Expression*) getExpressionEquivalentTo:(Expression*) expr in:(NSArray*) array
++ (MTExpression*) getExpressionEquivalentTo:(MTExpression*) expr in:(NSArray*) array
 {
-    for (Expression* arg in array) {
+    for (MTExpression* arg in array) {
         if ([self isEquivalentUptoCalculation:expr toExpression:arg] || [self isEquivalentUptoCalculation:arg toExpression:expr]) {
             return arg;
         }
@@ -170,8 +170,8 @@ static Rule* getIdentityRule() {
 +(BOOL) isEquivalentUptoCalculationAndRearrangement:(NSArray *)array1 :(NSArray *)array2
 {
     NSMutableArray* otherArray = [NSMutableArray arrayWithArray:array2];
-    for (Expression* expr in array1) {
-        Expression* other = [self getExpressionEquivalentTo:expr in:otherArray];
+    for (MTExpression* expr in array1) {
+        MTExpression* other = [self getExpressionEquivalentTo:expr in:otherArray];
         if (other) {
             [otherArray removeObject:other];
         } else {
@@ -181,12 +181,12 @@ static Rule* getIdentityRule() {
     return (otherArray.count == 0);
 }
 
-+ (FXOperator*) toOperator:(Expression *)var
++ (MTOperator*) toOperator:(MTExpression *)var
 {
-    return [FXOperator operatorWithType:kMultiplication args:var :[FXNumber numberWithValue:[Rational one]]];
+    return [MTOperator operatorWithType:kMTMultiplication args:var :[MTNumber numberWithValue:[MTRational one]]];
 }
 
-+ (BOOL) diffOperator:(FXOperator*) first with:(FXOperator*) second removedChildren:(NSArray**) removedChildren addedChildren:(NSArray**) addedChildren
++ (BOOL) diffOperator:(MTOperator*) first with:(MTOperator*) second removedChildren:(NSArray**) removedChildren addedChildren:(NSArray**) addedChildren
 {
     if (first.type != second.type) {
         if (removedChildren) {
@@ -204,7 +204,7 @@ static Rule* getIdentityRule() {
     NSMutableArray* added = [NSMutableArray arrayWithCapacity:second.children.count];
     
     NSMutableArray* removed = [NSMutableArray arrayWithArray:first.children];
-    for (Expression* child in second.children) {
+    for (MTExpression* child in second.children) {
         NSUInteger index = [removed indexOfObject:child];
         if (index == NSNotFound) {
             [added addObject:child];
@@ -224,12 +224,12 @@ static Rule* getIdentityRule() {
 }
 
 
-+ (FXNumber*) getIdentity:(char) operatorType
++ (MTNumber*) getIdentity:(char) operatorType
 {
-    if (operatorType == kMultiplication) {
-        return [FXNumber numberWithValue:[Rational one]];
-    } else if (operatorType == kAddition) {
-        return [FXNumber numberWithValue:[Rational zero]];
+    if (operatorType == kMTMultiplication) {
+        return [MTNumber numberWithValue:[MTRational one]];
+    } else if (operatorType == kMTAddition) {
+        return [MTNumber numberWithValue:[MTRational zero]];
     }
     return nil;
 }
@@ -237,7 +237,7 @@ static Rule* getIdentityRule() {
 + (MTMathListRange*) unionedRange:(NSArray*) exprs
 {
     NSMutableArray* ranges = [NSMutableArray arrayWithCapacity:exprs.count];
-    for (Expression* expr in exprs) {
+    for (MTExpression* expr in exprs) {
         if (expr.range) {
             [ranges addObject:expr.range];
         } else {
@@ -247,28 +247,28 @@ static Rule* getIdentityRule() {
     return [MTMathListRange unionRanges:ranges];
 }
 
-+ (Expression*) combineExpressions:(NSArray*) exprs withOperatorType:(char) operatorType
++ (MTExpression*) combineExpressions:(NSArray*) exprs withOperatorType:(char) operatorType
 {
     if (exprs.count == 0) {
-        return [ExpressionUtil getIdentity:operatorType ];
+        return [MTExpressionUtil getIdentity:operatorType ];
     } else if (exprs.count == 1) {
         return exprs[0];
     } else {
-        return [FXOperator operatorWithType:operatorType args:exprs range:[self unionedRange:exprs]];
+        return [MTOperator operatorWithType:operatorType args:exprs range:[self unionedRange:exprs]];
     }
 }
 
-+ (BOOL)expression:(Expression *)expr containsVariable:(FXVariable *)var
++ (BOOL)expression:(MTExpression *)expr containsVariable:(MTVariable *)var
 {
     switch (expr.expressionType) {
-        case kFXNumber:
+        case kMTExpressionTypeNumber:
             return false;
             
-        case kFXVariable:
+        case kMTExpressionTypeVariable:
             return [var isEqual:expr];
             
-        case kFXOperator: {
-            for (Expression* child in expr.children) {
+        case kMTExpressionTypeOperator: {
+            for (MTExpression* child in expr.children) {
                 if ([self expression:child containsVariable:var]) {
                     return true;
                 }
@@ -276,12 +276,12 @@ static Rule* getIdentityRule() {
             return false;
         }
             
-        case kFXNull:
+        case kMTExpressionTypeNull:
             return false;
     }
 }
 
-+ (BOOL) isExpression:(Expression*) expr subsetOf:(FXOperator*) oper difference:(NSArray**) difference
++ (BOOL) isExpression:(MTExpression*) expr subsetOf:(MTOperator*) oper difference:(NSArray**) difference
 {
     // There are two cases of a subset, one when the expression expr is wholly a part of oper. Two when both are the same
     // operators and all children of expr are children of oper.
@@ -294,9 +294,9 @@ static Rule* getIdentityRule() {
             *difference = childrenWithoutExpr;
         }
         return true;
-    } else if (expr.expressionType == kFXOperator && [expr equalsExpressionValue:oper.type]) {
+    } else if (expr.expressionType == kMTExpressionTypeOperator && [expr equalsExpressionValue:oper.type]) {
         NSArray *added;
-        if([ExpressionUtil diffOperator:oper with:(FXOperator*) expr removedChildren:difference addedChildren:&added]) {
+        if([MTExpressionUtil diffOperator:oper with:(MTOperator*) expr removedChildren:difference addedChildren:&added]) {
             NSParameterAssert(added);
             if (added.count > 0) {
                 // for a subset all children of expr should be children of oper
@@ -309,17 +309,17 @@ static Rule* getIdentityRule() {
 }
 
 
-+ (Expression*) getLeadingTerm:(Expression*) expr
++ (MTExpression*) getLeadingTerm:(MTExpression*) expr
 {
-    if (expr.expressionType != kFXOperator) {
+    if (expr.expressionType != kMTExpressionTypeOperator) {
         return expr;
     }
     
     // operator
-    if ([expr equalsExpressionValue:kMultiplication]) {
+    if ([expr equalsExpressionValue:kMTMultiplication]) {
         // This is the leading term, eg. 5x
         return expr;
-    } else if ([expr equalsExpressionValue:kAddition]) {
+    } else if ([expr equalsExpressionValue:kMTAddition]) {
         // first child
         return expr.children[0];
     } else {
@@ -328,44 +328,44 @@ static Rule* getIdentityRule() {
     }
 }
 
-+ (NSSet *)getVariablesInExpression:(Expression *)expr
++ (NSSet *)getVariablesInExpression:(MTExpression *)expr
 {
     switch (expr.expressionType) {
-        case kFXNumber:
+        case kMTExpressionTypeNumber:
             // empty set
             return [NSSet set];
             
-        case kFXVariable:
+        case kMTExpressionTypeVariable:
             return [NSSet setWithObject:expr];
             
-        case kFXOperator: {
+        case kMTExpressionTypeOperator: {
             NSMutableSet* set = [NSMutableSet set];
-            for (Expression* child in expr.children) {
+            for (MTExpression* child in expr.children) {
                 [set unionSet:[self getVariablesInExpression:child]];
             }
             return set;
         }
             
-        case kFXNull:
+        case kMTExpressionTypeNull:
             // empty set
             return [NSSet set];
             
     }
 }
 
-+ (BOOL) isDivision:(Expression*) expr
++ (BOOL) isDivision:(MTExpression*) expr
 {
-    return expr.expressionType == kFXOperator && [expr equalsExpressionValue:kDivision];
+    return expr.expressionType == kMTExpressionTypeOperator && [expr equalsExpressionValue:kMTDivision];
 }
 
-+ (BOOL) isMultiplication:(Expression*) expr
++ (BOOL) isMultiplication:(MTExpression*) expr
 {
-    return expr.expressionType == kFXOperator && [expr equalsExpressionValue:kMultiplication];
+    return expr.expressionType == kMTExpressionTypeOperator && [expr equalsExpressionValue:kMTMultiplication];
 }
 
-+ (BOOL) isAddition:(Expression *)expr
++ (BOOL) isAddition:(MTExpression *)expr
 {
-    return expr.expressionType == kFXOperator && [expr equalsExpressionValue:kAddition];
+    return expr.expressionType == kMTExpressionTypeOperator && [expr equalsExpressionValue:kMTAddition];
 }
 
 @end

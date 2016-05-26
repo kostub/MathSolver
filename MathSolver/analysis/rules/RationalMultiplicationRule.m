@@ -9,21 +9,21 @@
 //
 
 #import "RationalMultiplicationRule.h"
-#import "Expression.h" 
-#import "ExpressionUtil.h"
+#import "MTExpression.h" 
+#import "MTExpressionUtil.h"
 
 @implementation RationalMultiplicationRule
 
 
-- (Expression*) applyToTopLevelNode:(Expression *)expr withChildren:(NSArray *)args
+- (MTExpression*) applyToTopLevelNode:(MTExpression *)expr withChildren:(NSArray *)args
 {
-    if ([ExpressionUtil isMultiplication:expr]) {
+    if ([MTExpressionUtil isMultiplication:expr]) {
         BOOL applicable = NO;
         // collect all the numerators & denominators
         NSMutableArray* numerators = [NSMutableArray arrayWithCapacity:args.count];
         NSMutableArray* denominators = [NSMutableArray arrayWithCapacity:args.count];
-        for (Expression* arg in args) {
-            if ([ExpressionUtil isDivision:arg]) {
+        for (MTExpression* arg in args) {
+            if ([MTExpressionUtil isDivision:arg]) {
                 applicable = YES;
                 NSAssert(arg.children.count == 2, @"Division should have exactly 2 arguments.");
                 [numerators addObject:arg.children[0]];
@@ -35,14 +35,14 @@
         
         if (applicable) {
             // Multiply all the numerators together
-            FXOperator* numerator = [FXOperator operatorWithType:kMultiplication args:numerators];
+            MTOperator* numerator = [MTOperator operatorWithType:kMTMultiplication args:numerators];
             NSAssert(denominators.count > 0, @"There should be at least one denominator for this rule to be applicable.");
-            Expression* denominator = denominators[0];
+            MTExpression* denominator = denominators[0];
             if (denominators.count > 1) {
                 // If there is more than one denominator, multiply them all.
-                denominator = [FXOperator operatorWithType:kMultiplication args:denominators];
+                denominator = [MTOperator operatorWithType:kMTMultiplication args:denominators];
             }
-            return [FXOperator operatorWithType:kDivision args:numerator :denominator];
+            return [MTOperator operatorWithType:kMTDivision args:numerator :denominator];
         }
     }
     return expr;

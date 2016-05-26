@@ -8,11 +8,11 @@
 //  MIT license. See the LICENSE file for details.
 //
 
-#import "Tokenizer.h"
-#import "Symbol.h"
-#import "Expression.h"
+#import "MTTokenizer.h"
+#import "MTSymbol.h"
+#import "MTExpression.h"
 
-@implementation Tokenizer {
+@implementation MTTokenizer {
     NSString* _string;
     int _current;
 }
@@ -27,7 +27,7 @@
     return self;
 }
 
-- (Symbol*) getNextToken
+- (MTSymbol*) getNextToken
 {
     NSUInteger length = [_string length];
     // safety check
@@ -49,16 +49,16 @@
             // we are still at a space and _current has gone past the end, so no more characters are left.
             return nil;
         case 0x00D7:
-            return [Symbol symbolWithType:kOperator value:[NSNumber numberWithUnsignedShort:kMultiplication] offset:NSMakeRange(offset, 1)];
+            return [MTSymbol symbolWithType:kMTSymbolTypeOperator value:[NSNumber numberWithUnsignedShort:kMTMultiplication] offset:NSMakeRange(offset, 1)];
         case '+':
         case '-':
         case '*':
         case '/':
-            return [Symbol symbolWithType:kOperator value:[NSNumber numberWithUnsignedShort:ch] offset:NSMakeRange(offset, 1)];
+            return [MTSymbol symbolWithType:kMTSymbolTypeOperator value:[NSNumber numberWithUnsignedShort:ch] offset:NSMakeRange(offset, 1)];
         case '(':
-            return [Symbol symbolWithType:kOpenParen value:nil offset:NSMakeRange(offset, 1)];
+            return [MTSymbol symbolWithType:kMTSymbolTypeOpenParen value:nil offset:NSMakeRange(offset, 1)];
         case ')':
-            return [Symbol symbolWithType:kClosedParen value:nil offset:NSMakeRange(offset, 1)];
+            return [MTSymbol symbolWithType:kMTSymbolTypeClosedParen value:nil offset:NSMakeRange(offset, 1)];
             
         default:
             break;
@@ -76,9 +76,9 @@
                 ch = 0;
             }
         } while(ch >= '0' && ch <= '9');
-        return [Symbol symbolWithType:kNumber value:[NSNumber numberWithUnsignedInt:value] offset:NSMakeRange(offset, 1)];  // note this is not really 1
+        return [MTSymbol symbolWithType:kMTSymbolTypeNumber value:[NSNumber numberWithUnsignedInt:value] offset:NSMakeRange(offset, 1)];  // note this is not really 1
     } else if(ch >= 'a' && ch <= 'z') {
-        return [Symbol symbolWithType:kVariable value:[NSNumber numberWithUnsignedShort:ch] offset:NSMakeRange(offset, 1)];
+        return [MTSymbol symbolWithType:kMTSymbolTypeVariable value:[NSNumber numberWithUnsignedShort:ch] offset:NSMakeRange(offset, 1)];
     }
     // throw exception?
     [NSException raise:@"ParseError" format:@"Unknown type of character: %c", ch];

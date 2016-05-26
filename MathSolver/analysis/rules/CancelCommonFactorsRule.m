@@ -9,24 +9,24 @@
 //
 
 #import "CancelCommonFactorsRule.h"
-#import "Expression.h"
-#import "ExpressionUtil.h"
+#import "MTExpression.h"
+#import "MTExpressionUtil.h"
 
 @implementation CancelCommonFactorsRule
 
-- (Expression*) applyToTopLevelNode:(Expression *)expr withChildren:(NSArray *)args
+- (MTExpression*) applyToTopLevelNode:(MTExpression *)expr withChildren:(NSArray *)args
 {
-    if ([ExpressionUtil isDivision:expr]) {
+    if ([MTExpressionUtil isDivision:expr]) {
         NSAssert(args.count == 2, @"A division can only have 2 arguments.");
-        Expression* first = args[0];
-        Expression* second = args[1];
+        MTExpression* first = args[0];
+        MTExpression* second = args[1];
         NSArray* numeratorFactors = [self factors:first];
         NSMutableArray* denominatorFactors = [self factors:second].mutableCopy;
         
         BOOL foundCommonFactors = NO;
         NSMutableArray* remainingNumerators = [NSMutableArray arrayWithCapacity:numeratorFactors.count];
-        for (Expression* factor in numeratorFactors) {
-            Expression* common = [ExpressionUtil getExpressionEquivalentTo:factor in:denominatorFactors];
+        for (MTExpression* factor in numeratorFactors) {
+            MTExpression* common = [MTExpressionUtil getExpressionEquivalentTo:factor in:denominatorFactors];
             if (common) {
                 [denominatorFactors removeObject:common];
                 foundCommonFactors = YES;
@@ -36,17 +36,17 @@
         }
         
         if (foundCommonFactors) {
-            Expression* newNumerator = [ExpressionUtil combineExpressions:remainingNumerators withOperatorType:kMultiplication];
-            Expression* newDenominator = [ExpressionUtil combineExpressions:denominatorFactors withOperatorType:kMultiplication];
-            return [FXOperator operatorWithType:kDivision args:newNumerator :newDenominator];
+            MTExpression* newNumerator = [MTExpressionUtil combineExpressions:remainingNumerators withOperatorType:kMTMultiplication];
+            MTExpression* newDenominator = [MTExpressionUtil combineExpressions:denominatorFactors withOperatorType:kMTMultiplication];
+            return [MTOperator operatorWithType:kMTDivision args:newNumerator :newDenominator];
         }
     }
     return expr;
 }
 
-- (NSArray*) factors:(Expression*) expr
+- (NSArray*) factors:(MTExpression*) expr
 {
-    if ([ExpressionUtil isMultiplication:expr]) {
+    if ([MTExpressionUtil isMultiplication:expr]) {
         return expr.children;
     } else {
         return [NSArray arrayWithObject:expr];

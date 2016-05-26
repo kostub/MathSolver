@@ -8,59 +8,59 @@
 //  MIT license. See the LICENSE file for details.
 //
 
-#import "ExpressionAnalysis.h"
+#import "MTExpressionAnalysis.h"
 
-#import "ExpressonInfo.h"
-#import "ExpressionUtil.h"
+#import "MTExpressionInfo.h"
+#import "MTExpressionUtil.h"
 #import "ReorderTermsRule.h"
 #import "DecimalReduceRule.h"
 
-@implementation ExpressionAnalysis
+@implementation MTExpressionAnalysis
 
-+ (BOOL) isExpressionFinalStep:(ExpressionInfo*) expressionInfo forEntityType:(MathEntityType) originalEntityType
++ (BOOL) isExpressionFinalStep:(MTExpressionInfo*) expressionInfo forEntityType:(MTMathEntityType) originalEntityType
 {
-    if (originalEntityType == kFXExpression) {
+    if (originalEntityType == kMTExpression) {
         ReorderTermsRule* rule = [ReorderTermsRule rule];
         // apply the rules before checking equality since the user may not have the terms in the right order or reduced decimals.
         return [self isReducedExpression:[rule apply:expressionInfo.normalized] withNormalForm:expressionInfo.normalForm];
-    } else if (originalEntityType == kFXEquation) {
+    } else if (originalEntityType == kMTEquation) {
         // Note: This works only for linear equations, systems of equations and quadratics may need different things to check.
-        Equation* eq = (Equation*) expressionInfo.normalized;
+        MTEquation* eq = (MTEquation*) expressionInfo.normalized;
         // x = 5 or 5 = x is acceptable.
-        if ((eq.lhs.expressionType == kFXVariable && [self isReducedEquationSide:eq.rhs])
-            || (eq.rhs.expressionType == kFXVariable && [self isReducedEquationSide:eq.lhs])) {
+        if ((eq.lhs.expressionType == kMTExpressionTypeVariable && [self isReducedEquationSide:eq.rhs])
+            || (eq.rhs.expressionType == kMTExpressionTypeVariable && [self isReducedEquationSide:eq.lhs])) {
             return true;
         }
     }
     return false;
 }
 
-+ (BOOL) isReducedExpression:(Expression*) expr withNormalForm:(Expression*) normalForm
++ (BOOL) isReducedExpression:(MTExpression*) expr withNormalForm:(MTExpression*) normalForm
 {
     DecimalReduceRule* decimalReduce = [DecimalReduceRule rule];
     return [normalForm isEqual:[decimalReduce apply:expr]];
 }
 
-+ (BOOL) isReducedEquationSide:(Expression*) expr
++ (BOOL) isReducedEquationSide:(MTExpression*) expr
 {
-    ExpressionInfo* exprInfo = [[ExpressionInfo alloc] initWithExpression:expr input:nil];
-    return expr.expressionType == kFXNumber && [self isReducedExpression:expr withNormalForm:exprInfo.normalForm];
+    MTExpressionInfo* exprInfo = [[MTExpressionInfo alloc] initWithExpression:expr input:nil];
+    return expr.expressionType == kMTExpressionTypeNumber && [self isReducedExpression:expr withNormalForm:exprInfo.normalForm];
 }
 
-+ (BOOL)hasCheckableAnswer:(ExpressionInfo*) start
++ (BOOL)hasCheckableAnswer:(MTExpressionInfo*) start
 {
-    id<MathEntity> expr = start.original;
+    id<MTMathEntity> expr = start.original;
     if ([self isExpressionFinalStep:start forEntityType:expr.entityType]) {
         InfoLog(@"Expression %@ cannot be solved further", expr);
         return NO;
     }
 
     switch (start.original.entityType) {
-        case kFXExpression: {
-            Expression* normal = start.normalForm;
-            if ([ExpressionUtil isDivision:normal]) {
-                Expression* numerator = normal.children[0];
-                Expression* denominator = normal.children[1];
+        case kMTExpression: {
+            MTExpression* normal = start.normalForm;
+            if ([MTExpressionUtil isDivision:normal]) {
+                MTExpression* numerator = normal.children[0];
+                MTExpression* denominator = normal.children[1];
                 if (numerator.degree > 1 || denominator.degree > 1) {
                     InfoLog(@"Expression %@ has numerator or denominator degree > 1", expr);
                     return NO;
@@ -69,11 +69,11 @@
                 InfoLog(@"Expression %@ has degree > 1", expr);
                 return NO;
             }
-            if (normal.expressionType == kFXNull) {
+            if (normal.expressionType == kMTExpressionTypeNull) {
                 InfoLog(@"Expression %@ is mathematically invalid.", expr);
                 return NO;
             }
-            NSSet* vars = [ExpressionUtil getVariablesInExpression:normal];
+            NSSet* vars = [MTExpressionUtil getVariablesInExpression:normal];
             if (vars.count > 1) {
                 InfoLog(@"Expression %@ has more than one variable.", expr);
                 return NO;
@@ -81,10 +81,10 @@
             break;
         }
 
-        case kFXEquation: {
-            Equation* eq = start.normalForm;
+        case kMTEquation: {
+            MTEquation* eq = start.normalForm;
             // only need to check lhs since the rhs is always 0
-            if (eq.lhs.expressionType == kFXNull) {
+            if (eq.lhs.expressionType == kMTExpressionTypeNull) {
                 InfoLog(@"Expression %@ is mathematically invalid.", expr);
                 return NO;
             } else if (eq.lhs.degree == 0) {
@@ -94,14 +94,14 @@
             } else if (eq.lhs.degree > 1) {
                 InfoLog(@"Expression %@ has degree > 1", expr);
                 return NO;
-            } else if ([ExpressionUtil getVariablesInExpression:eq.lhs].count > 1) {
+            } else if ([MTExpressionUtil getVariablesInExpression:eq.lhs].count > 1) {
                 InfoLog(@"Equation %@ has more than one variable", expr);
                 return NO;
             }
             break;
         }
 
-        case kFXTypeAny:
+        case kMTTypeAny:
             InfoLog(@"Unknown expression type %@", start.original);
             return NO;
     }

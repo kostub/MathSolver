@@ -9,11 +9,11 @@
 //
 
 #import "ReorderTermsRule.h"
-#import "Expression.h"
+#import "MTExpression.h"
 
 @implementation ReorderTermsRule
 
-unsigned long getDegree(Expression* expr) {
+unsigned long getDegree(MTExpression* expr) {
     if (expr.hasDegree) {
         return [expr degree];
     } else {
@@ -22,20 +22,20 @@ unsigned long getDegree(Expression* expr) {
 }
 
 // Returns the variables as an array. Also counts the number of sub operators (i.e. operators which are children of this operator) and returns them in subOperatorCount
-NSArray* getVariables(FXOperator* op, int* subOperatorCount) {
+NSArray* getVariables(MTOperator* op, int* subOperatorCount) {
     NSMutableArray* vars = [NSMutableArray array];
     *subOperatorCount = 0;
-    for (Expression* expr in [op children]) {
-        if (expr.expressionType == kFXVariable) {
+    for (MTExpression* expr in [op children]) {
+        if (expr.expressionType == kMTExpressionTypeVariable) {
             [vars addObject:expr];
-        } else if (expr.expressionType == kFXOperator) {
+        } else if (expr.expressionType == kMTExpressionTypeOperator) {
             (*subOperatorCount)++;
         }
     }
     return vars;
 }
 
-NSComparisonResult compareOperatorsForAddition(FXOperator *op1, FXOperator *op2) {
+NSComparisonResult compareOperatorsForAddition(MTOperator *op1, MTOperator *op2) {
     // These operators have the same degree.
     // There arguments should have been sorted by now.
     
@@ -57,8 +57,8 @@ NSComparisonResult compareOperatorsForAddition(FXOperator *op1, FXOperator *op2)
         assert([var1 count] == [var2 count]);
         // The variables should already be in lexicographic order. So pick the first one that is different.
         for (int i = 0; i < [var1 count]; ++i) {
-            FXVariable *v1 = [var1 objectAtIndex:i];
-            FXVariable *v2 = [var2 objectAtIndex:i];
+            MTVariable *v1 = [var1 objectAtIndex:i];
+            MTVariable *v2 = [var2 objectAtIndex:i];
             NSComparisonResult result = [v1 compare:v2];
             if (result != NSOrderedSame) {
                 return result;
@@ -69,7 +69,7 @@ NSComparisonResult compareOperatorsForAddition(FXOperator *op1, FXOperator *op2)
     }
 }
 
-NSComparisonResult compareVariableToOperatorForAddition(FXOperator *op1, FXVariable *op2) {
+NSComparisonResult compareVariableToOperatorForAddition(MTOperator *op1, MTVariable *op2) {
     int subOpCount = 0;
     NSArray* vars = getVariables(op1, &subOpCount);
     if (subOpCount > 0) {
@@ -77,34 +77,34 @@ NSComparisonResult compareVariableToOperatorForAddition(FXOperator *op1, FXVaria
     }
     // there should only be one variable since the degrees match.
     assert([vars count] == 1);
-    FXVariable* op1Var = [vars lastObject];
+    MTVariable* op1Var = [vars lastObject];
     return [op1Var compare:op2];
 }
 
 NSArray* reorderForMultiplication(const NSArray* args) {
     return[args sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-        if ([obj1 isKindOfClass:[FXNumber class]]) {
-            if ([obj2 isKindOfClass:[FXNumber class]]) {
-                FXNumber* n1 = obj1;
+        if ([obj1 isKindOfClass:[MTNumber class]]) {
+            if ([obj2 isKindOfClass:[MTNumber class]]) {
+                MTNumber* n1 = obj1;
                 return [n1 compare:obj2];
             } else {
                 // numbers come before operators and variables
                 return NSOrderedAscending;
             }
-        } else if ([obj1 isKindOfClass:[FXVariable class]]) {
-            if ([obj2 isKindOfClass:[FXNumber class]]) {
+        } else if ([obj1 isKindOfClass:[MTVariable class]]) {
+            if ([obj2 isKindOfClass:[MTNumber class]]) {
                 // numbers come before variables.
                 return NSOrderedDescending;
-            } else if ([obj2 isKindOfClass:[FXVariable class]]) {
-                FXVariable* v1 = obj1;
+            } else if ([obj2 isKindOfClass:[MTVariable class]]) {
+                MTVariable* v1 = obj1;
                 return [v1 compare:obj2];
             } else {
-                assert([obj2 isKindOfClass:[FXOperator class]]);
+                assert([obj2 isKindOfClass:[MTOperator class]]);
                 // variables always come before operators
                 return NSOrderedAscending;
             }
-        } else if ([obj1 isKindOfClass:[FXOperator class]]) {
-            if([obj2 isKindOfClass:[FXOperator class]]) {
+        } else if ([obj1 isKindOfClass:[MTOperator class]]) {
+            if([obj2 isKindOfClass:[MTOperator class]]) {
                 // Should 2x + 1 be lower than x + 2? Don't know, don't really care since this rule should be applied after canoncicalization. Return same for simplicity.
                 return NSOrderedSame;
             } else {
@@ -122,8 +122,8 @@ NSArray* reorderForMultiplication(const NSArray* args) {
 // Note there is some advantage of ordering the operators in a different way for optimizing gcd calculations. Consult book to figure that out.
 NSArray* reorderForAddition(const NSArray* args) {
     return[args sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-        Expression* ex1 = obj1;
-        Expression* ex2 = obj2;
+        MTExpression* ex1 = obj1;
+        MTExpression* ex2 = obj2;
         if (!ex1.hasDegree && !ex2.hasDegree) {
             // These are degree less and can't be ordered, just say they are the same.
             return NSOrderedSame;
@@ -136,21 +136,21 @@ NSArray* reorderForAddition(const NSArray* args) {
             return NSOrderedDescending;
         } else {
             // lexicographic ordering of variables
-            if ([obj1 isKindOfClass:[FXNumber class]]) {
-                if ([obj2 isKindOfClass:[FXNumber class]]) {
-                    FXNumber* n1 = obj1;
+            if ([obj1 isKindOfClass:[MTNumber class]]) {
+                if ([obj2 isKindOfClass:[MTNumber class]]) {
+                    MTNumber* n1 = obj1;
                     return [n1 compare:obj2];
                 } else {
-                    assert([obj2 isKindOfClass:[FXOperator class]]);
+                    assert([obj2 isKindOfClass:[MTOperator class]]);
                     // numbers come before operators
                     return NSOrderedAscending;
                 }
-            } else if ([obj1 isKindOfClass:[FXVariable class]]) {
-                if ([obj2 isKindOfClass:[FXVariable class]]) {
-                    FXVariable* v1 = obj1;
+            } else if ([obj1 isKindOfClass:[MTVariable class]]) {
+                if ([obj2 isKindOfClass:[MTVariable class]]) {
+                    MTVariable* v1 = obj1;
                     return [v1 compare:obj2];
                 } else {
-                    assert([obj2 isKindOfClass:[FXOperator class]]);
+                    assert([obj2 isKindOfClass:[MTOperator class]]);
                     NSComparisonResult result = compareVariableToOperatorForAddition(obj2, obj1);
                     // note the compare function compares obj2 to obj1, so we need to reverse the result
                     if (result == NSOrderedDescending) {
@@ -161,10 +161,10 @@ NSArray* reorderForAddition(const NSArray* args) {
                         return NSOrderedSame;
                     }
                 }
-            } else if ([obj1 isKindOfClass:[FXOperator class]]) {
-                if([obj2 isKindOfClass:[FXOperator class]]) {
+            } else if ([obj1 isKindOfClass:[MTOperator class]]) {
+                if([obj2 isKindOfClass:[MTOperator class]]) {
                     return compareOperatorsForAddition(obj1, obj2);
-                } else if ([obj2 isKindOfClass:[FXVariable class]]) {
+                } else if ([obj2 isKindOfClass:[MTVariable class]]) {
                     return compareVariableToOperatorForAddition(obj1, obj2);
                 } else {
                     // operators come after numbers
@@ -179,24 +179,24 @@ NSArray* reorderForAddition(const NSArray* args) {
     }];
 }
 
-- (Expression*) applyToTopLevelNode:(Expression *)expr withChildren:(NSArray *)args
+- (MTExpression*) applyToTopLevelNode:(MTExpression *)expr withChildren:(NSArray *)args
 {
     // Removes addition and multiplication identities from the operators.
-    if (![expr isKindOfClass:[FXOperator class]]) {
+    if (![expr isKindOfClass:[MTOperator class]]) {
         return expr;
     }
-    FXOperator *oper = (FXOperator *) expr;
+    MTOperator *oper = (MTOperator *) expr;
 
     NSArray* sortedArgs = nil;
-    if (oper.type == kMultiplication) {
+    if (oper.type == kMTMultiplication) {
         sortedArgs = reorderForMultiplication(args);
-    } else if (oper.type == kAddition) {
+    } else if (oper.type == kMTAddition) {
         sortedArgs = reorderForAddition(args);
     } else {
         // No ordering implemented for other operators.
         return expr;
     }
-    return [FXOperator operatorWithType:oper.type args:sortedArgs];
+    return [MTOperator operatorWithType:oper.type args:sortedArgs];
 }
 
 @end

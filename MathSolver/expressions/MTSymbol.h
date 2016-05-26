@@ -10,25 +10,25 @@
 
 #import <Foundation/Foundation.h>
 
-@interface Symbol : NSObject
+@interface MTSymbol : NSObject
 
-enum Type {
-    kVariable = 1,
-    kNumber,
-    kOperator,
-    kOpenParen,
-    kClosedParen,
-    kRelation
+enum MTSymbolType {
+    kMTSymbolTypeVariable = 1,
+    kMTSymbolTypeNumber,
+    kMTSymbolTypeOperator,
+    kMTSymbolTypeOpenParen,
+    kMTSymbolTypeClosedParen,
+    kMTSymbolTypeRelation
 };
 
 
 // Create an symbol with type and value
-+ (id) symbolWithType:(enum Type) type value:(NSNumber*) value offset:(NSRange) offset;
++ (id) symbolWithType:(enum MTSymbolType) type value:(NSNumber*) value offset:(NSRange) offset;
 
 - (unichar) charValue;
 - (unsigned int) intValue;
 
-@property (nonatomic, readonly) enum Type type;
+@property (nonatomic, readonly) enum MTSymbolType type;
 @property (nonatomic, readonly) NSNumber *value;
 @property (nonatomic, readonly) NSRange offset;
 

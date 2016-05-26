@@ -10,7 +10,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class Expression;
+@class MTExpression;
 
 @interface Rule : NSObject
 
@@ -18,12 +18,12 @@
 + (instancetype) rule;
 
 // Does a recursive post-order traversal of the expression, applying the rule.
-- (Expression*) apply:(Expression*) expr;
+- (MTExpression*) apply:(MTExpression*) expr;
 
 // Apply the rule only to the top level node. Subclasses need to implement this method. The children already have the rule applied to them.
-- (Expression*) applyToTopLevelNode:(Expression *)expr withChildren:(NSArray*) args;
+- (MTExpression*) applyToTopLevelNode:(MTExpression *)expr withChildren:(NSArray*) args;
 
 // Apply the rule to the inner most level. Only make one application if onlyFirst is true.
-- (Expression*) applyInnerMost:(Expression *)expr onlyFirst:(BOOL) onlyFirst;
+- (MTExpression*) applyInnerMost:(MTExpression *)expr onlyFirst:(BOOL) onlyFirst;
 
 @end

@@ -9,23 +9,23 @@
 //
 
 #import "IdentityRule.h"
-#import "Expression.h"
-#import "ExpressionUtil.h"
+#import "MTExpression.h"
+#import "MTExpressionUtil.h"
 
 @implementation IdentityRule
 
-- (Expression*) applyToTopLevelNode:(Expression *)expr withChildren:(NSArray *)args
+- (MTExpression*) applyToTopLevelNode:(MTExpression *)expr withChildren:(NSArray *)args
 {
     // Removes addition and multiplication identities from the operators.
-    if (expr.expressionType != kFXOperator) {
+    if (expr.expressionType != kMTExpressionTypeOperator) {
         return expr;
     }
-    FXOperator *oper = (FXOperator *) expr;
-    FXNumber* identity = [ExpressionUtil getIdentity:oper.type];
+    MTOperator *oper = (MTOperator *) expr;
+    MTNumber* identity = [MTExpressionUtil getIdentity:oper.type];
     if (!identity) {
         return expr;
     }
-    for (Expression *arg in args) {
+    for (MTExpression *arg in args) {
         if ([arg isEqual:identity]) {
             NSMutableArray* newArgs = [NSMutableArray arrayWithArray:args];
             [newArgs removeObject:arg];
@@ -33,7 +33,7 @@
             if ([newArgs count] == 1) {
                 return [newArgs lastObject];
             } else {
-                return [FXOperator operatorWithType:oper.type args:newArgs];
+                return [MTOperator operatorWithType:oper.type args:newArgs];
             }
         }
     }

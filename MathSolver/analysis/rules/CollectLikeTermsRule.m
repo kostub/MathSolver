@@ -9,28 +9,28 @@
 //
 
 #import "CollectLikeTermsRule.h"
-#import "Expression.h"
-#import "ExpressionUtil.h"
+#import "MTExpression.h"
+#import "MTExpressionUtil.h"
 
 @implementation CollectLikeTermsRule
 
 
 // Collects the terms with the same variables together and adds the coefficients of the variables.
 // This only works for addition operators. so 5x + 3 + 2x + 5 will become 7x + 3 + 5
-- (Expression*) applyToTopLevelNode:(Expression *)expr withChildren:(NSArray *)args {
+- (MTExpression*) applyToTopLevelNode:(MTExpression *)expr withChildren:(NSArray *)args {
     
-    if (![ExpressionUtil isAddition:expr]) {
+    if (![MTExpressionUtil isAddition:expr]) {
         return expr;
     }
 
     NSMutableArray* otherTerms = [NSMutableArray arrayWithCapacity:[args count]];
     NSMutableDictionary* dict = [NSMutableDictionary dictionary];
     BOOL combinedTerms = NO;
-    for (Expression* arg in args) {
+    for (MTExpression* arg in args) {
         NSArray* vars;
-        Rational* coefficent;
-        if ([ExpressionUtil expression:arg getCoefficent:&coefficent variables:&vars]) {
-            if (arg.expressionType == kFXNumber) {
+        MTRational* coefficent;
+        if ([MTExpressionUtil expression:arg getCoefficent:&coefficent variables:&vars]) {
+            if (arg.expressionType == kMTExpressionTypeNumber) {
                 // numbers get combined if it is a CLT but by themselves don't trigger a CLT rule
                 [self combineTerms:vars withValue:coefficent inDict:dict];
             } else {
@@ -45,12 +45,12 @@
     if (combinedTerms) {
         // if we combined the terms, then create a new expression with the combined terms
         for (NSArray* key in dict) {
-            Rational* coeff = [dict objectForKey:key];
-            FXNumber* coeffNum = [FXNumber numberWithValue:coeff];
+            MTRational* coeff = [dict objectForKey:key];
+            MTNumber* coeffNum = [MTNumber numberWithValue:coeff];
             if (key.count > 0) {
                 NSMutableArray* args = [NSMutableArray arrayWithObject:coeffNum];
                 [args addObjectsFromArray:key];
-                [otherTerms addObject:[FXOperator operatorWithType:kMultiplication args:args]];
+                [otherTerms addObject:[MTOperator operatorWithType:kMTMultiplication args:args]];
             } else {
                 // no variables, just a number
                 [otherTerms addObject:coeffNum];
@@ -61,17 +61,17 @@
             // skip the addition operator
             return [otherTerms lastObject];
         }
-        return [FXOperator operatorWithType:kAddition args:otherTerms];
+        return [MTOperator operatorWithType:kMTAddition args:otherTerms];
     } else {
         return expr;
     }
 }
 
-- (BOOL) combineTerms:(NSArray*) variables withValue:(Rational*) value inDict:(NSMutableDictionary*) dict
+- (BOOL) combineTerms:(NSArray*) variables withValue:(MTRational*) value inDict:(NSMutableDictionary*) dict
 {
-    Rational* currentVal = [dict objectForKey:variables];
+    MTRational* currentVal = [dict objectForKey:variables];
     if (currentVal) {
-        Rational* updatedValue = [currentVal add:value];
+        MTRational* updatedValue = [currentVal add:value];
         [dict setObject:updatedValue forKey:variables];
         return YES;
     } else {

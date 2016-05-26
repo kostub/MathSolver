@@ -9,19 +9,19 @@
 //
 
 #import "NullRule.h"
-#import "Expression.h"
+#import "MTExpression.h"
 
 @implementation NullRule
 
-- (Expression *)applyToTopLevelNode:(Expression *)expr withChildren:(NSArray *)args
+- (MTExpression *)applyToTopLevelNode:(MTExpression *)expr withChildren:(NSArray *)args
 {
     // This rule only applies to operators
-    if (expr.expressionType != kFXOperator) {
+    if (expr.expressionType != kMTExpressionTypeOperator) {
         return expr;
     }
     // If any argument is null, this returns null.
-    for (Expression *arg in args) {
-        if (arg.expressionType == kFXNull) {
+    for (MTExpression *arg in args) {
+        if (arg.expressionType == kMTExpressionTypeNull) {
             return arg;
         }
     }

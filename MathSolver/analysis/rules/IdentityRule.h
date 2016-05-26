@@ -9,11 +9,11 @@
 //
 
 #import "Rule.h"
-#import "Expression.h"
+#import "MTExpression.h"
 
 // Removes addititive and multiplicative identities.
 @interface IdentityRule : Rule
 
-- (Expression*) applyToTopLevelNode:(Expression *)expr withChildren:(NSArray *)args;
+- (MTExpression*) applyToTopLevelNode:(MTExpression *)expr withChildren:(NSArray *)args;
 
 @end

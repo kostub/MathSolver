@@ -8,27 +8,27 @@
 //  MIT license. See the LICENSE file for details.
 
 #import <Foundation/Foundation.h>
-#import "Expression.h"
+#import "MTExpression.h"
 #import "MTMathList.h"
 
 // Information about an expression
-@interface ExpressionInfo : NSObject
+@interface MTExpressionInfo : NSObject
 
 // Create an ExpressionInfo object with the parsed expression, the original unparsed input MTMathList and if present a variableName
-- (id) initWithExpression:(id<MathEntity>) expression input:(MTMathList*) input variable:(NSString*) variable;
+- (id) initWithExpression:(id<MTMathEntity>) expression input:(MTMathList*) input variable:(NSString*) variable;
 // Same as above but variableName is nil
-- (id) initWithExpression:(id<MathEntity>) expression input:(MTMathList*) input;
+- (id) initWithExpression:(id<MTMathEntity>) expression input:(MTMathList*) input;
 // We allow empty expression infos with just a variable.
 - (id) initWithVariable:(NSString*) variable;
 
 - (NSString *)description;
 
 // The original expression as displayed
-@property (nonatomic, readonly) id<MathEntity> original;
+@property (nonatomic, readonly) id<MTMathEntity> original;
 // Normalized form of the expression
-@property (nonatomic, readonly) id<MathEntity> normalized;
+@property (nonatomic, readonly) id<MTMathEntity> normalized;
 // The expression in normal form (i.e. where 0 is 0) this is represented as A/B where A and B are polynomials or A = 0 for equations.
-@property (nonatomic, readonly) id<MathEntity> normalForm;
+@property (nonatomic, readonly) id<MTMathEntity> normalForm;
 // The variable (if any) for this expression.
 @property (nonatomic, readonly) NSString* variableName;
 // The original input from the user.

@@ -9,18 +9,18 @@
 //
 
 #import "ZeroRule.h"
-#import "Expression.h"
+#import "MTExpression.h"
 
 @implementation ZeroRule
 
-- (Expression*) applyToTopLevelNode:(Expression *)expr withChildren:(NSArray *)args
+- (MTExpression*) applyToTopLevelNode:(MTExpression *)expr withChildren:(NSArray *)args
 {
     // Multiplication by 0 returns 0
-    if (expr.expressionType != kFXOperator || ![expr equalsExpressionValue:kMultiplication]) {
+    if (expr.expressionType != kMTExpressionTypeOperator || ![expr equalsExpressionValue:kMTMultiplication]) {
         return expr;
     }
-    for (Expression *arg in args) {
-        if (arg.expressionType == kFXNumber && [arg.expressionValue isEquivalent:[Rational zero]]) {
+    for (MTExpression *arg in args) {
+        if (arg.expressionType == kMTExpressionTypeNumber && [arg.expressionValue isEquivalent:[MTRational zero]]) {
             return arg;
         }
     }    

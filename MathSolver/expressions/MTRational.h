@@ -13,33 +13,33 @@
 
 typedef enum
 {
-    kRationalFormatNone = 0,    // Default value
-    kRationalFormatWhole,       // A whole number
-    kRationalFormatDecimal,     // A number with a decimal point
-    kRationalFormatImproper,
-    kRationalFormatMixed,
-} RationalFormat;
+    kMTRationalFormatNone = 0,    // Default value
+    kMTRationalFormatWhole,       // A whole number
+    kMTRationalFormatDecimal,     // A number with a decimal point
+    kMTRationalFormatImproper,
+    kMTRationalFormatMixed,
+} MTRationalFormat;
 
-@interface Rational : NSObject
+@interface MTRational : NSObject
 
 @property (nonatomic, readonly) NSInteger numerator;
 @property (nonatomic, readonly) NSInteger denominator;
 // The format in which this rational was entered.
-@property (nonatomic, readonly) RationalFormat format;
+@property (nonatomic, readonly) MTRationalFormat format;
 
 + (instancetype) rationalWithNumerator:(NSInteger) numerator denominator:(NSInteger) denominator;
 
-- (Rational*) negation;
-- (Rational*) reciprocal;
-- (Rational*) absoluteValue;
+- (MTRational*) negation;
+- (MTRational*) reciprocal;
+- (MTRational*) absoluteValue;
 
-- (Rational*) add:(Rational*) r;
-- (Rational*) subtract:(Rational*) r;
-- (Rational*) multiply:(Rational*) r;
-- (Rational*) divideBy:(Rational*) r;
+- (MTRational*) add:(MTRational*) r;
+- (MTRational*) subtract:(MTRational*) r;
+- (MTRational*) multiply:(MTRational*) r;
+- (MTRational*) divideBy:(MTRational*) r;
 
 // Reduced to it's base form
-- (Rational*) reduced;
+- (MTRational*) reduced;
 
 // Return the rational as a floating point number.
 - (float) floatValue;
@@ -48,26 +48,26 @@ typedef enum
 
 - (NSString *)description;
 - (BOOL)isEqual:(id)object;
-- (BOOL)isEqualToRational:(Rational*) r;
+- (BOOL)isEqualToRational:(MTRational*) r;
 
 // The number is equivalent, i.e. the same number, but it could be a different representation.
 // e.g. 1/2 and 2/4 are equivalent fractions.
-- (BOOL)isEquivalent:(Rational*) r;
+- (BOOL)isEquivalent:(MTRational*) r;
 
-- (NSComparisonResult) compare:(Rational *)aNumber;
+- (NSComparisonResult) compare:(MTRational *)aNumber;
 - (BOOL) isPositive;
 - (BOOL) isNegative;
 - (BOOL) isZero;
 - (BOOL) isReduced;
-- (BOOL) isGreaterThan:(Rational*) r;
-- (BOOL) isLessThan:(Rational*) r;
+- (BOOL) isGreaterThan:(MTRational*) r;
+- (BOOL) isLessThan:(MTRational*) r;
 - (NSUInteger)hash;
 
-+ (Rational*) zero;
-+ (Rational*) one;
-+ (Rational*) rationalWithNumber:(NSInteger) number;
++ (MTRational*) zero;
++ (MTRational*) one;
++ (MTRational*) rationalWithNumber:(NSInteger) number;
 // Parses a string of the form a.b where a and b are integers to a rational. Does not handle -ve signs.
 // If the string is not in the given format, this fails.
-+ (Rational*) rationalFromDecimalRepresentation:(NSString*) str;
++ (MTRational*) rationalFromDecimalRepresentation:(NSString*) str;
 
 @end

@@ -9,15 +9,15 @@
 //
 
 #import "DecimalReduceRule.h"
-#import "Expression.h"
+#import "MTExpression.h"
 
 @implementation DecimalReduceRule
 
-- (Expression *)applyToTopLevelNode:(Expression *)expr withChildren:(NSArray *)args
+- (MTExpression *)applyToTopLevelNode:(MTExpression *)expr withChildren:(NSArray *)args
 {
-    if (expr.expressionType == kFXNumber) {
-        Rational* value = expr.expressionValue;
-        if (value.format == kRationalFormatDecimal) {
+    if (expr.expressionType == kMTExpressionTypeNumber) {
+        MTRational* value = expr.expressionValue;
+        if (value.format == kMTRationalFormatDecimal) {
             return [super applyToTopLevelNode:expr withChildren:args];
         }
     }

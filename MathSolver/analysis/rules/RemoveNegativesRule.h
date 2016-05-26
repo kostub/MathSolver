@@ -11,11 +11,11 @@
 #import <Foundation/Foundation.h>
 #import "Rule.h"
 
-@class Expression;
+@class MTExpression;
 
 // Removes -ve signs and subtraction operators.
 @interface RemoveNegativesRule : Rule
 
-- (Expression*) applyToTopLevelNode:(Expression *)expr withChildren:(NSArray *)args;
+- (MTExpression*) applyToTopLevelNode:(MTExpression *)expr withChildren:(NSArray *)args;
 
 @end

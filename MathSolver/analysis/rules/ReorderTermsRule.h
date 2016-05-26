@@ -15,6 +15,6 @@
 // This should only be used for one level deep trees. The results for multilevel expression trees are not guaranteed to be what you expect.
 @interface ReorderTermsRule : Rule
 
-- (Expression*) applyToTopLevelNode:(Expression *)expr withChildren:(NSArray *)args;
+- (MTExpression*) applyToTopLevelNode:(MTExpression *)expr withChildren:(NSArray *)args;
 
 @end

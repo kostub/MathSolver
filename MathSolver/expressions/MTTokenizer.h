@@ -10,12 +10,12 @@
 
 #import <Foundation/Foundation.h>
 
-@class Symbol;
-@interface Tokenizer : NSObject
+@class MTSymbol;
+@interface MTTokenizer : NSObject
 
 - (id) initWithString:(NSString*) string;
 
 // Returns nil when no more tokens left
-- (Symbol*) getNextToken;
+- (MTSymbol*) getNextToken;
 
 @end

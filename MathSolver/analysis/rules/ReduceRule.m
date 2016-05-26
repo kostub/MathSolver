@@ -9,16 +9,16 @@
 //
 
 #import "ReduceRule.h"
-#import "Expression.h"
+#import "MTExpression.h"
 
 @implementation ReduceRule
 
-- (Expression *)applyToTopLevelNode:(Expression *)expr withChildren:(NSArray *)args
+- (MTExpression *)applyToTopLevelNode:(MTExpression *)expr withChildren:(NSArray *)args
 {
-    if (expr.expressionType == kFXNumber) {
-        Rational* value = expr.expressionValue;
+    if (expr.expressionType == kMTExpressionTypeNumber) {
+        MTRational* value = expr.expressionValue;
         if (!value.isReduced) {
-            return [FXNumber numberWithValue:value.reduced];
+            return [MTNumber numberWithValue:value.reduced];
         }
     }
     return expr;

@@ -8,22 +8,22 @@
 //  MIT license. See the LICENSE file for details.
 //
 
-#import "Symbol.h"
+#import "MTSymbol.h"
 
 
-@interface Symbol ()
+@interface MTSymbol ()
 
-@property (nonatomic) enum Type type;
+@property (nonatomic) enum MTSymbolType type;
 @property (nonatomic) NSNumber* value;
 @property (nonatomic) NSRange offset;
 
 @end
 
-@implementation Symbol
+@implementation MTSymbol
 
-+ (id) symbolWithType:(enum Type)type value:(NSNumber *)value offset:(NSRange)offset
++ (id) symbolWithType:(enum MTSymbolType)type value:(NSNumber *)value offset:(NSRange)offset
 {
-    Symbol *sym = [[Symbol alloc] init];
+    MTSymbol *sym = [[MTSymbol alloc] init];
     sym.type = type;
     sym.value = value;
     sym.offset = offset;

@@ -9,30 +9,30 @@
 //
 
 #import "CalculateRule.h"
-#import "Expression.h"
+#import "MTExpression.h"
 
 @implementation CalculateRule
 
-- (Expression*) applyToTopLevelNode:(Expression *)expr withChildren:(NSArray *)args
+- (MTExpression*) applyToTopLevelNode:(MTExpression *)expr withChildren:(NSArray *)args
 {
-    if (expr.expressionType != kFXOperator) {
+    if (expr.expressionType != kMTExpressionTypeOperator) {
         return expr;
     }
-    if ([expr equalsExpressionValue:kDivision]) {
+    if ([expr equalsExpressionValue:kMTDivision]) {
         
         NSAssert(args.count == 2, @"Division with more than 2 arguments: %@", args);
         
-        Expression* dividend = args[0];
-        Expression* divisor = args[1];
-        if (divisor.expressionType == kFXNumber) {
-            Expression* divided = [self performDivision:(FXNumber*)divisor dividend:dividend];
+        MTExpression* dividend = args[0];
+        MTExpression* divisor = args[1];
+        if (divisor.expressionType == kMTExpressionTypeNumber) {
+            MTExpression* divided = [self performDivision:(MTNumber*)divisor dividend:dividend];
             if (divided) {
                 return divided;
             }
         }
-    } else if ([expr equalsExpressionValue:kAddition] || [expr equalsExpressionValue:kMultiplication]) {
-        FXOperator* oper = (FXOperator*) expr;
-        Expression* reduced = [self calculate:args operator:oper.type];
+    } else if ([expr equalsExpressionValue:kMTAddition] || [expr equalsExpressionValue:kMTMultiplication]) {
+        MTOperator* oper = (MTOperator*) expr;
+        MTExpression* reduced = [self calculate:args operator:oper.type];
         if (reduced) {
             return reduced;
         }
@@ -41,84 +41,84 @@
     return expr;
 }
 
-- (Expression*)performDivision:(FXNumber *)divisor dividend:(Expression *)dividend
+- (MTExpression*)performDivision:(MTNumber *)divisor dividend:(MTExpression *)dividend
 {
     // Get the coefficent of dividend
-    Rational* divisorValue = divisor.value;
-    if (![divisorValue isEquivalent:[Rational zero]]) {
-        Expression* multiplication = [FXOperator operatorWithType:kMultiplication args:dividend :[FXNumber numberWithValue:divisorValue.reciprocal]];
+    MTRational* divisorValue = divisor.value;
+    if (![divisorValue isEquivalent:[MTRational zero]]) {
+        MTExpression* multiplication = [MTOperator operatorWithType:kMTMultiplication args:dividend :[MTNumber numberWithValue:divisorValue.reciprocal]];
         switch (dividend.expressionType) {
                 
-            case kFXNumber:
-                return [FXNumber numberWithValue:[divisorValue.reciprocal multiply:dividend.expressionValue]];
+            case kMTExpressionTypeNumber:
+                return [MTNumber numberWithValue:[divisorValue.reciprocal multiply:dividend.expressionValue]];
                 
-            case kFXVariable:
+            case kMTExpressionTypeVariable:
                 return multiplication;
                 
-            case kFXOperator:
-                if ([dividend equalsExpressionValue:kMultiplication]) {
+            case kMTExpressionTypeOperator:
+                if ([dividend equalsExpressionValue:kMTMultiplication]) {
                     // for a multiplication, perform a reduce
                     NSMutableArray* newArgs = [NSMutableArray arrayWithArray:dividend.children];
-                    [newArgs addObject:[FXNumber numberWithValue:divisorValue.reciprocal]];
-                    Expression* reduced = [self calculate:newArgs operator:kMultiplication];
+                    [newArgs addObject:[MTNumber numberWithValue:divisorValue.reciprocal]];
+                    MTExpression* reduced = [self calculate:newArgs operator:kMTMultiplication];
                     return (reduced) ? reduced : multiplication;
                 } else {
                     return multiplication;
                 }
                 
-            case kFXNull:
-                return [FXNull null];
+            case kMTExpressionTypeNull:
+                return [MTNull null];
         }
     } else {
         // Division by 0 is not supported.
-        return [FXNull null];
+        return [MTNull null];
     }
 }
 
-- (Expression*) calculate:(NSArray *)children operator:(char)operType
+- (MTExpression*) calculate:(NSArray *)children operator:(char)operType
 {
     NSMutableArray* newArgs = [NSMutableArray arrayWithCapacity:[children count]];
     NSMutableArray* numbersToOperateOn = [NSMutableArray arrayWithCapacity:[children count]];
     
-    for (Expression *arg in children) {
-        if ([arg isKindOfClass:[FXNumber class]]) {
+    for (MTExpression *arg in children) {
+        if ([arg isKindOfClass:[MTNumber class]]) {
             [numbersToOperateOn addObject:arg];
         } else {
             [newArgs addObject:arg];
         }
     }
     if ([numbersToOperateOn count] > 1) {
-        FXNumber* number = [self reduce:numbersToOperateOn withOperator:operType];
+        MTNumber* number = [self reduce:numbersToOperateOn withOperator:operType];
         if ([newArgs count] == 0) {
             // there are no non-number expressions, so remove the operator
             return number;
         } else {
             [newArgs addObject:number];
-            return [FXOperator operatorWithType:operType args:newArgs];
+            return [MTOperator operatorWithType:operType args:newArgs];
         }
     }
     return nil;
 }
 
 
-- (FXNumber*) reduce:(NSArray*) numbers withOperator:(char) operType
+- (MTNumber*) reduce:(NSArray*) numbers withOperator:(char) operType
 {
     switch (operType) {
         case '+':
         {
-            Rational* answer = [Rational zero];
-            for (FXNumber* arg in numbers) {
+            MTRational* answer = [MTRational zero];
+            for (MTNumber* arg in numbers) {
                 answer = [answer add:arg.value];
             }
-            return [FXNumber numberWithValue:answer];
+            return [MTNumber numberWithValue:answer];
         }
         case '*':
         {
-            Rational* answer = [Rational one];
-            for (FXNumber* arg in numbers) {
+            MTRational* answer = [MTRational one];
+            for (MTNumber* arg in numbers) {
                 answer = [answer multiply:arg.value];
             }
-            return [FXNumber numberWithValue:answer];
+            return [MTNumber numberWithValue:answer];
         }
             
         default:

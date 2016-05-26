@@ -8,22 +8,22 @@
 //  MIT license. See the LICENSE file for details.
 //
 
-#import "Expression.h"
-#import "ExpressionUtil.h"
+#import "MTExpression.h"
+#import "MTExpressionUtil.h"
 
-const char kUnaryMinus = '_';
-const char kSubtraction = '-';
-const char kAddition = '+';
-const char kMultiplication = '*';
-const char kDivision = '/';
+const char kMTUnaryMinus = '_';
+const char kMTSubtraction = '-';
+const char kMTAddition = '+';
+const char kMTMultiplication = '*';
+const char kMTDivision = '/';
 
-#pragma mark - Expression
+#pragma mark - MTExpression
 
-@interface Expression ()
+@interface MTExpression ()
 @property (nonatomic) MTMathListRange* range;
 @end
 
-@implementation Expression
+@implementation MTExpression
 
 
 - (NSArray*) children
@@ -57,7 +57,7 @@ const char kDivision = '/';
                                  userInfo:nil];
 }
 
-- (enum ExpressionType) expressionType
+- (enum MTExpressionType) expressionType
 {
     @throw [NSException exceptionWithName:@"InternalException"
                                    reason:[NSString stringWithFormat:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)]
@@ -71,28 +71,28 @@ const char kDivision = '/';
                                  userInfo:nil];
 }
 
-- (BOOL) isEquivalentToExpression:(Expression*) expr
+- (BOOL) isEquivalentToExpression:(MTExpression*) expr
 {
     @throw [NSException exceptionWithName:@"InternalException"
                                    reason:[NSString stringWithFormat:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)]
                                  userInfo:nil];
 }
 
-- (BOOL)isEquivalent:(id<MathEntity>)entity
+- (BOOL)isEquivalent:(id<MTMathEntity>)entity
 {
-    if (entity.entityType == kFXExpression) {
+    if (entity.entityType == kMTExpression) {
         return [self isEquivalentToExpression:entity];
     } else {
         return NO;
     }
 }
 
-- (BOOL) isEqualUptoRearrangement:(Expression *)expr
+- (BOOL) isEqualUptoRearrangement:(MTExpression *)expr
 {
     return [self isEqual:expr];
 }
 
-- (BOOL)isEqualUptoRearrangementRecursive:(Expression *)expr
+- (BOOL)isEqualUptoRearrangementRecursive:(MTExpression *)expr
 {
     return [self isEqualUptoRearrangement:expr];
 }
@@ -107,12 +107,12 @@ const char kDivision = '/';
     return [number isEqual:self.expressionValue];
 }
 
--(MathEntityType)entityType
+-(MTMathEntityType)entityType
 {
-    return kFXExpression;
+    return kMTExpression;
 }
 
-- (Expression *)expressionWithRange:(MTMathListRange *)range
+- (MTExpression *)expressionWithRange:(MTMathListRange *)range
 {
     @throw [NSException exceptionWithName:@"InternalException"
                                    reason:[NSString stringWithFormat:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)]
@@ -121,20 +121,20 @@ const char kDivision = '/';
 
 @end
 
-#pragma mark - FXNumber
+#pragma mark - MTNumber
 
-@implementation FXNumber
+@implementation MTNumber
 
-+(id) numberWithValue:(Rational*)value
++(id) numberWithValue:(MTRational*)value
 {
-    FXNumber* number = [self new];
+    MTNumber* number = [self new];
     number->_value = value;
     return number;
 }
 
-+(id) numberWithValue:(Rational*)value range:(MTMathListRange*)range
++(id) numberWithValue:(MTRational*)value range:(MTMathListRange*)range
 {
-    FXNumber* number = [self numberWithValue:value];
+    MTNumber* number = [self numberWithValue:value];
     number.range = range;
     return number;
 }
@@ -155,15 +155,15 @@ const char kDivision = '/';
     return [self isEqualToNumber:anObject];
 }
 
-- (BOOL) isEqualToNumber:(FXNumber*) number
+- (BOOL) isEqualToNumber:(MTNumber*) number
 {
     return [self.value isEqualToRational:number.value];
 }
 
-- (BOOL) isEquivalentToExpression:(Expression*) expr
+- (BOOL) isEquivalentToExpression:(MTExpression*) expr
 {
-    if (expr.expressionType == kFXNumber) {
-        Rational* rat = expr.expressionValue;
+    if (expr.expressionType == kMTExpressionTypeNumber) {
+        MTRational* rat = expr.expressionValue;
         return [self.value isEquivalent:rat];
     } else {
         return NO;
@@ -175,7 +175,7 @@ const char kDivision = '/';
     return self.value.hash;
 }
 
-- (NSComparisonResult) compare:(FXNumber *)aNumber
+- (NSComparisonResult) compare:(MTNumber *)aNumber
 {
     return [self.value compare:aNumber.value];
 }
@@ -190,9 +190,9 @@ const char kDivision = '/';
     return YES;
 }
 
-- (enum ExpressionType) expressionType
+- (enum MTExpressionType) expressionType
 {
-    return kFXNumber;
+    return kMTExpressionTypeNumber;
 }
 
 - (id) expressionValue
@@ -203,31 +203,31 @@ const char kDivision = '/';
 - (BOOL)isExpressionValueEqualToNumber:(NSNumber *)number
 {
     // convert to a rational before comparing
-    Rational* rat = [Rational rationalWithNumber:number.integerValue];
+    MTRational* rat = [MTRational rationalWithNumber:number.integerValue];
     return [rat isEquivalent:self.value];
 }
 
-- (Expression *)expressionWithRange:(MTMathListRange *)range
+- (MTExpression *)expressionWithRange:(MTMathListRange *)range
 {
-    return [FXNumber numberWithValue:self.value range:range];
+    return [MTNumber numberWithValue:self.value range:range];
 }
 
 @end
 
-#pragma mark - FXVariable
+#pragma mark - MTVariable
 
-@implementation FXVariable
+@implementation MTVariable
 
 +(id) variableWithName:(char)name
 {
-    FXVariable* var = [self new];
+    MTVariable* var = [self new];
     var->_name = name;
     return var;
 }
 
 +(id) variableWithName:(char)name range:(MTMathListRange*)range
 {
-    FXVariable* var = [self variableWithName:name];
+    MTVariable* var = [self variableWithName:name];
     var.range = range;
     return var;
 }
@@ -245,11 +245,11 @@ const char kDivision = '/';
     if (!anObject || ![anObject isKindOfClass:[self class]]) {
         return NO;
     }
-    FXVariable* other = (FXVariable*) anObject;
+    MTVariable* other = (MTVariable*) anObject;
     return (other.name == self.name);
 }
 
-- (BOOL) isEquivalentToExpression:(Expression*) expr
+- (BOOL) isEquivalentToExpression:(MTExpression*) expr
 {
     return [self isEqual:expr];
 }
@@ -259,7 +259,7 @@ const char kDivision = '/';
     return self.name;
 }
 
-- (NSComparisonResult) compare:(FXVariable *)aVariable
+- (NSComparisonResult) compare:(MTVariable *)aVariable
 {
     if (self.name > aVariable.name) {
         return NSOrderedDescending;
@@ -280,9 +280,9 @@ const char kDivision = '/';
     return YES;
 }
 
-- (enum ExpressionType) expressionType
+- (enum MTExpressionType) expressionType
 {
-    return kFXVariable;
+    return kMTExpressionTypeVariable;
 }
 
 - (id) expressionValue
@@ -290,16 +290,16 @@ const char kDivision = '/';
     return [NSNumber numberWithChar:self.name];
 }
 
-- (Expression *)expressionWithRange:(MTMathListRange *)range
+- (MTExpression *)expressionWithRange:(MTMathListRange *)range
 {
-    return [FXVariable variableWithName:self.name range:range];
+    return [MTVariable variableWithName:self.name range:range];
 }
 
 @end
 
 #pragma mark - FXOperator
 
-@implementation FXOperator {
+@implementation MTOperator {
     NSArray *_args;
 }
 
@@ -316,13 +316,13 @@ const char kDivision = '/';
     NSMutableString* str = [NSMutableString stringWithString:@"("];
     if (_args.count == 1) {
         // Unary case is different
-        Expression* expr = [_args objectAtIndex:0];
+        MTExpression* expr = [_args objectAtIndex:0];
         [str appendFormat:@"%c %@)", _type, expr.stringValue];
         return str;
     }
     
     for (int i = 0; i < _args.count; ++i) {
-        Expression* expr = [_args objectAtIndex:i];
+        MTExpression* expr = [_args objectAtIndex:i];
         [str appendString:expr.stringValue];
         if (i != _args.count - 1) {
             [str appendFormat:@" %c ", _type];
@@ -332,7 +332,7 @@ const char kDivision = '/';
     return str;
 }
 
-+(id) operatorWithType:(char)type args:(Expression *)arg1 :(Expression *)arg2
++(id) operatorWithType:(char)type args:(MTExpression *)arg1 :(MTExpression *)arg2
 {
     MTMathListRange* opRange = nil;
     if (arg1.range && arg2.range) {
@@ -345,18 +345,18 @@ const char kDivision = '/';
     return [self operatorWithType:type args:arg1 :arg2 range:opRange];
 }
 
-+(id) operatorWithType:(char)type args:(Expression *)arg1 :(Expression *)arg2 range:(MTMathListRange*)range
++(id) operatorWithType:(char)type args:(MTExpression *)arg1 :(MTExpression *)arg2 range:(MTMathListRange*)range
 {
-    FXOperator* op = [[FXOperator alloc] init];
+    MTOperator* op = [[MTOperator alloc] init];
     op->_type = type;
     [op setArgs:@[arg1, arg2]];
     op.range = range;
     return op;
 }
 
-+(id) unaryOperatorWithType:(char)type arg:(Expression *)arg range:(MTMathListRange*)range
++(id) unaryOperatorWithType:(char)type arg:(MTExpression *)arg range:(MTMathListRange*)range
 {
-    FXOperator* op = [[FXOperator alloc] init];
+    MTOperator* op = [[MTOperator alloc] init];
     op->_type = type;
     [op setArgs:@[arg]];
     op.range = range;
@@ -369,7 +369,7 @@ const char kDivision = '/';
 
 + (id)operatorWithType:(char)type args:(NSArray *)args range:(MTMathListRange *)range
 {
-    FXOperator* op = [[FXOperator alloc] init];
+    MTOperator* op = [[MTOperator alloc] init];
     assert([args count] > 1);   // no unary operators allowed.
     op->_type = type;
     op.range = range;
@@ -377,7 +377,7 @@ const char kDivision = '/';
     return op;
 }
 
-- (BOOL)isEqualToOperator:(FXOperator*) object
+- (BOOL)isEqualToOperator:(MTOperator*) object
 {
     return (self.type == object.type && [_args isEqualToArray:object->_args]);
 }
@@ -393,16 +393,16 @@ const char kDivision = '/';
     return [self isEqualToOperator:anObject];
 }
 
-- (BOOL) isEquivalentToExpression:(Expression*) expr
+- (BOOL) isEquivalentToExpression:(MTExpression*) expr
 {
-    if (expr.expressionType == kFXOperator) {
-        FXOperator* oper = (FXOperator*) expr;
+    if (expr.expressionType == kMTExpressionTypeOperator) {
+        MTOperator* oper = (MTOperator*) expr;
         NSArray* children = oper.children;
         if (self.type == oper.type && _args.count == children.count) {
             // check that each child is equivalent to the corresponding child
             for (int i = 0; i < _args.count; i++) {
-                Expression* expr1 = _args[i];
-                Expression* expr2 = children[i];
+                MTExpression* expr1 = _args[i];
+                MTExpression* expr2 = children[i];
                 if (![expr1 isEquivalent:expr2]) {
                     return NO;
                 }
@@ -421,10 +421,10 @@ const char kDivision = '/';
 
 - (NSUInteger) degree
 {
-    if (self.type == kAddition) {
+    if (self.type == kMTAddition) {
         // In the case of addition the degree is the max of the degrees of all the arguments.
         return [[_args valueForKeyPath:@"@max.degree"] intValue];
-    } else if (self.type == kMultiplication) {
+    } else if (self.type == kMTMultiplication) {
         // In the case of multiplication the degree is the sum of all the degrees of the arguments.
         return [[_args valueForKeyPath:@"@sum.degree"] intValue];
     } else {
@@ -434,12 +434,12 @@ const char kDivision = '/';
 
 - (BOOL)hasDegree
 {
-    return (self.type == kAddition) || (self.type == kMultiplication);
+    return (self.type == kMTAddition) || (self.type == kMTMultiplication);
 }
 
-- (enum ExpressionType) expressionType
+- (enum MTExpressionType) expressionType
 {
-    return kFXOperator;
+    return kMTExpressionTypeOperator;
 }
 
 - (id) expressionValue
@@ -447,7 +447,7 @@ const char kDivision = '/';
     return [NSNumber numberWithChar:self.type];
 }
 
-- (BOOL) isEqualUptoRearrangement:(Expression *)expr
+- (BOOL) isEqualUptoRearrangement:(MTExpression *)expr
 {
     if (self.expressionType != expr.expressionType) {
         return false;
@@ -456,10 +456,10 @@ const char kDivision = '/';
         return false;
     }
     
-    return ![ExpressionUtil diffOperator:self with:(FXOperator*)expr removedChildren:nil addedChildren:nil];
+    return ![MTExpressionUtil diffOperator:self with:(MTOperator*)expr removedChildren:nil addedChildren:nil];
 }
 
-- (BOOL)isEqualUptoRearrangementRecursive:(Expression *)expr
+- (BOOL)isEqualUptoRearrangementRecursive:(MTExpression *)expr
 {
     if (self.expressionType != expr.expressionType) {
         return false;
@@ -477,9 +477,9 @@ const char kDivision = '/';
     
     // This algorithm is exponential, please use carefully
     NSMutableArray* remainingChildren = [NSMutableArray arrayWithArray:expr.children];
-    for (Expression* child in self.children) {
+    for (MTExpression* child in self.children) {
         BOOL foundChild = false;
-        for (Expression* theirChild in remainingChildren) {
+        for (MTExpression* theirChild in remainingChildren) {
             if ([child isEqualUptoRearrangementRecursive:theirChild]) {
                 foundChild = true;
                 [remainingChildren removeObject:theirChild];
@@ -493,27 +493,27 @@ const char kDivision = '/';
     return remainingChildren.count == 0;
 }
 
-- (Expression *)expressionWithRange:(MTMathListRange *)range
+- (MTExpression *)expressionWithRange:(MTMathListRange *)range
 {
     if (self.children.count == 1) {
-        return [FXOperator unaryOperatorWithType:self.type arg:self.children[0] range:range];
+        return [MTOperator unaryOperatorWithType:self.type arg:self.children[0] range:range];
     } else {
-        return [FXOperator operatorWithType:self.type args:self.children range:range];
+        return [MTOperator operatorWithType:self.type args:self.children range:range];
     }
 }
 
 @end
 
-#pragma mark - FXNull
+#pragma mark - MTNull
 
-@implementation FXNull
+@implementation MTNull
 
 + (instancetype) null
 {
-    static FXNull *sharedInstance = nil;
+    static MTNull *sharedInstance = nil;
     static dispatch_once_t onceToken = 0;
     dispatch_once(&onceToken, ^{
-        sharedInstance = [FXNull new];
+        sharedInstance = [MTNull new];
         // Do any other initialisation stuff here
     });
     return sharedInstance;
@@ -534,9 +534,9 @@ const char kDivision = '/';
     return NO;
 }
 
-- (enum ExpressionType) expressionType
+- (enum MTExpressionType) expressionType
 {
-    return kFXNull;
+    return kMTExpressionTypeNull;
 }
 
 - (id) expressionValue
@@ -544,21 +544,21 @@ const char kDivision = '/';
     return [NSNull null];
 }
 
-- (BOOL) isEquivalentToExpression:(Expression*) expr
+- (BOOL) isEquivalentToExpression:(MTExpression*) expr
 {
-    return expr.expressionType == kFXNull;
+    return expr.expressionType == kMTExpressionTypeNull;
 }
 
 @end
 
 
-#pragma mark - Equation
+#pragma mark - MTEquation
 
-@implementation Equation
+@implementation MTEquation
 
-+ (id)equationWithRelation:(char)relation lhs:(Expression *)lhs rhs:(Expression *)rhs
++ (id)equationWithRelation:(char)relation lhs:(MTExpression *)lhs rhs:(MTExpression *)rhs
 {
-    Equation* eq = [Equation new];
+    MTEquation* eq = [MTEquation new];
     eq->_relation = relation;
     eq->_lhs = lhs;
     eq->_rhs = rhs;
@@ -575,9 +575,9 @@ const char kDivision = '/';
     return self.stringValue;
 }
 
-- (MathEntityType)entityType
+- (MTMathEntityType)entityType
 {
-    return kFXEquation;
+    return kMTEquation;
 }
 
 - (BOOL)isEqual:(id)anObject
@@ -591,15 +591,15 @@ const char kDivision = '/';
     return [self isEqualToEquation:anObject];
 }
 
-- (BOOL) isEqualToEquation:(Equation*) eq
+- (BOOL) isEqualToEquation:(MTEquation*) eq
 {
     return self.relation == eq.relation && [self.lhs isEqual:eq.lhs] && [self.rhs isEqual:eq.rhs];
 }
 
-- (BOOL)isEquivalent:(id<MathEntity>)entity
+- (BOOL)isEquivalent:(id<MTMathEntity>)entity
 {
-    if (entity.entityType == kFXEquation) {
-        Equation* other = (Equation*) entity;
+    if (entity.entityType == kMTEquation) {
+        MTEquation* other = (MTEquation*) entity;
         return self.relation == other.relation && [self.lhs isEquivalent:other.lhs] && [self.rhs isEquivalent:other.rhs];
     } else {
         return NO;

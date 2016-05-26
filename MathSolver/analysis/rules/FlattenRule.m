@@ -9,20 +9,20 @@
 //
 
 #import "FlattenRule.h"
-#import "Expression.h"
-#import "ExpressionUtil.h"
+#import "MTExpression.h"
+#import "MTExpressionUtil.h"
 
 @implementation FlattenRule
 
-- (Expression*) applyToTopLevelNode:(Expression *)expr withChildren:(NSArray *)args
+- (MTExpression*) applyToTopLevelNode:(MTExpression *)expr withChildren:(NSArray *)args
 {
     if ([self canFlatten:expr]) {
         NSMutableArray* newArgs = [NSMutableArray arrayWithCapacity:[args count]];
-        FXOperator *oper = (FXOperator *) expr;
+        MTOperator *oper = (MTOperator *) expr;
         BOOL flattened = NO;
-        for (Expression *arg in args) {
+        for (MTExpression *arg in args) {
             // if the operator is of the same type as the parent, we can flatten out any arguments since our operators are commutative and associative.
-            if (arg.expressionType == kFXOperator && [arg equalsExpressionValue:oper.type]) {
+            if (arg.expressionType == kMTExpressionTypeOperator && [arg equalsExpressionValue:oper.type]) {
                 [newArgs addObjectsFromArray:[arg children]];
                 flattened = YES;       
             } else {
@@ -32,16 +32,16 @@
         if (flattened) {
             // at least one child was flattened then rebuild the expression
             // Note: the range does not change.
-            return [FXOperator operatorWithType:oper.type args:newArgs range:oper.range];
+            return [MTOperator operatorWithType:oper.type args:newArgs range:oper.range];
         }
     }
     return expr;
 }
 
-- (BOOL) canFlatten:(Expression*) expr
+- (BOOL) canFlatten:(MTExpression*) expr
 {
     // Only addition and multiplication are commutative & associative.
-    return [ExpressionUtil isAddition:expr] || [ExpressionUtil isMultiplication:expr];
+    return [MTExpressionUtil isAddition:expr] || [MTExpressionUtil isMultiplication:expr];
 }
 
 

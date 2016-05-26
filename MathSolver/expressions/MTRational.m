@@ -8,7 +8,7 @@
 //  MIT license. See the LICENSE file for details.
 //
 
-#import "Rational.h"
+#import "MTRational.h"
 
 static NSUInteger gcd(NSUInteger a, NSUInteger b) {
     while (b != 0) {
@@ -20,17 +20,17 @@ static NSUInteger gcd(NSUInteger a, NSUInteger b) {
 }
 
 // Represents a rational number
-@implementation Rational {
+@implementation MTRational {
     NSUInteger _gcd;
 }
 
-+ (instancetype) rationalWithNumerator:(NSInteger) numerator denominator:(NSInteger) denominator format:(RationalFormat) format;
++ (instancetype) rationalWithNumerator:(NSInteger) numerator denominator:(NSInteger) denominator format:(MTRationalFormat) format;
 {
     if (denominator == 0) {
         // can't have a rational number divided by 0
         return nil;
     }
-    if (format == kRationalFormatWhole && denominator != 1) {
+    if (format == kMTRationalFormatWhole && denominator != 1) {
         // Whole number should always have a denominator of 1.
         return nil;
     }
@@ -39,33 +39,33 @@ static NSUInteger gcd(NSUInteger a, NSUInteger b) {
 
 + (instancetype)rationalWithNumerator:(NSInteger)numerator denominator:(NSInteger)denominator
 {
-    return [self rationalWithNumerator:numerator denominator:denominator format:kRationalFormatImproper];
+    return [self rationalWithNumerator:numerator denominator:denominator format:kMTRationalFormatImproper];
 }
 
-+ (Rational *)zero
++ (MTRational *)zero
 {
-    static Rational* zero = nil;
+    static MTRational* zero = nil;
     if (!zero) {
-        zero = [Rational rationalWithNumber:0];
+        zero = [MTRational rationalWithNumber:0];
     }
     return zero;
 }
 
-+ (Rational *)one
++ (MTRational *)one
 {
-    static Rational* one = nil;
+    static MTRational* one = nil;
     if (!one) {
-        one = [Rational rationalWithNumber:1];
+        one = [MTRational rationalWithNumber:1];
     }
     return one;
 }
 
-+ (Rational *)rationalWithNumber:(NSInteger)number
++ (MTRational *)rationalWithNumber:(NSInteger)number
 {
-    return [[[self class] alloc] initWithNumerator:number denominator:1u format:kRationalFormatWhole];
+    return [[[self class] alloc] initWithNumerator:number denominator:1u format:kMTRationalFormatWhole];
 }
 
-+ (Rational*)rationalFromDecimalRepresentation:(NSString *)str
++ (MTRational*)rationalFromDecimalRepresentation:(NSString *)str
 {
     NSParameterAssert(str);
     if (str.length == 0) {
@@ -93,7 +93,7 @@ static NSUInteger gcd(NSUInteger a, NSUInteger b) {
     }
     if ([scanner isAtEnd]) {
         // The . at the end of the number is useless, we represent this as x.0
-        return [self rationalWithNumerator:whole*10 denominator:10 format:kRationalFormatDecimal];
+        return [self rationalWithNumerator:whole*10 denominator:10 format:kMTRationalFormatDecimal];
     }
     long numDigitsLeft = str.length - scanner.scanLocation;
     assert(numDigitsLeft > 0);  // otherwise the scanner should have been at the end
@@ -113,11 +113,11 @@ static NSUInteger gcd(NSUInteger a, NSUInteger b) {
     for (int i = 0; i < numDigitsLeft; i++) {
         denominator *= 10;
     }
-    Rational* r = [self rationalWithNumerator:(whole*denominator + fractional) denominator:denominator format:kRationalFormatDecimal];
+    MTRational* r = [self rationalWithNumerator:(whole*denominator + fractional) denominator:denominator format:kMTRationalFormatDecimal];
     return r;
 }
 
-- (instancetype) initWithNumerator:(NSInteger)numerator denominator:(NSUInteger)denominator format:(RationalFormat) format
+- (instancetype) initWithNumerator:(NSInteger)numerator denominator:(NSUInteger)denominator format:(MTRationalFormat) format
 {
     self = [super init];
     if (self) {
@@ -129,43 +129,43 @@ static NSUInteger gcd(NSUInteger a, NSUInteger b) {
     return self;
 }
 
-- (Rational *)negation
+- (MTRational *)negation
 {
     // negations retain the format
-    Rational* neg = [Rational rationalWithNumerator:-_numerator denominator:_denominator format:_format];
+    MTRational* neg = [MTRational rationalWithNumerator:-_numerator denominator:_denominator format:_format];
     return neg;
 }
 
-- (Rational *)add:(Rational *)r
+- (MTRational *)add:(MTRational *)r
 {
     if (self.denominator == r.denominator) {
         // Special case for common denominators to make the fractions look more normal
-        return [Rational rationalWithNumerator:(r.numerator + self.numerator) denominator:r.denominator];
+        return [MTRational rationalWithNumerator:(r.numerator + self.numerator) denominator:r.denominator];
     }
     // worry about oveflow?, should we always reduce?
     NSUInteger d = self.denominator * r.denominator;
     NSInteger n = self.numerator * r.denominator + r.numerator * self.denominator;
-    return [Rational rationalWithNumerator:n denominator:d];
+    return [MTRational rationalWithNumerator:n denominator:d];
 }
 
-- (Rational *)multiply:(Rational *)r
+- (MTRational *)multiply:(MTRational *)r
 {
     NSUInteger d = self.denominator * r.denominator;
     NSInteger n = self.numerator * r.numerator;
-    return [Rational rationalWithNumerator:n denominator:d];
+    return [MTRational rationalWithNumerator:n denominator:d];
 }
 
-- (Rational *)subtract:(Rational *)r
+- (MTRational *)subtract:(MTRational *)r
 {
     return [self add:r.negation];
 }
 
-- (Rational *)reciprocal
+- (MTRational *)reciprocal
 {
-    return [Rational rationalWithNumerator:self.denominator denominator:self.numerator];
+    return [MTRational rationalWithNumerator:self.denominator denominator:self.numerator];
 }
 
-- (Rational *)divideBy:(Rational *)r
+- (MTRational *)divideBy:(MTRational *)r
 {
     return [self multiply:r.reciprocal];
 }
@@ -175,12 +175,12 @@ static NSUInteger gcd(NSUInteger a, NSUInteger b) {
     return (_gcd == 1 && _denominator > 0);
 }
 
-- (Rational *)reduced
+- (MTRational *)reduced
 {
     if (self.isReduced) {
         return self;
     } else if (_gcd == 0) {
-        return [Rational zero];
+        return [MTRational zero];
     }
     // In C dividing an signed int by an unsigned will cause both to become unsigned!!, so cast to signed first.
     NSInteger numerator = self.numerator/(NSInteger) _gcd;
@@ -189,7 +189,7 @@ static NSUInteger gcd(NSUInteger a, NSUInteger b) {
         denominator = -denominator;
         numerator = -numerator;
     }
-    return [Rational rationalWithNumerator:numerator denominator:denominator];
+    return [MTRational rationalWithNumerator:numerator denominator:denominator];
 }
 
 - (float)floatValue
@@ -211,7 +211,7 @@ static NSUInteger gcd(NSUInteger a, NSUInteger b) {
     return self.numerator / self.denominator;
 }
 
-- (BOOL)isEqualToRational:(Rational *)r
+- (BOOL)isEqualToRational:(MTRational *)r
 {
     return (self.denominator == r.denominator && self.numerator == r.numerator);
 }
@@ -235,9 +235,9 @@ static NSUInteger gcd(NSUInteger a, NSUInteger b) {
 
 - (NSString *)description
 {
-    if (_format == kRationalFormatWhole || _denominator == 1) {
+    if (_format == kMTRationalFormatWhole || _denominator == 1) {
         return [NSString stringWithFormat:@"%ld", (long)self.numerator];
-    } else if (_format == kRationalFormatDecimal) {
+    } else if (_format == kMTRationalFormatDecimal) {
         // write it in decimal format.
         NSUInteger absNumerator = ABS(self.numerator);
         NSUInteger integerVal = absNumerator/self.denominator;
@@ -249,7 +249,7 @@ static NSUInteger gcd(NSUInteger a, NSUInteger b) {
     }
 }
 
-- (BOOL)isEquivalent:(Rational *)r
+- (BOOL)isEquivalent:(MTRational *)r
 {
     if ([self.reduced isEqualToRational:r.reduced]) {
         return YES;
@@ -260,9 +260,9 @@ static NSUInteger gcd(NSUInteger a, NSUInteger b) {
     return NO;
 }
 
-- (NSComparisonResult) compare:(Rational *)aNumber
+- (NSComparisonResult) compare:(MTRational *)aNumber
 {
-    Rational* r = [self subtract:aNumber];
+    MTRational* r = [self subtract:aNumber];
     if (r.numerator > 0) {
         return NSOrderedDescending;
     } else if (r.numerator < 0) {
@@ -288,17 +288,17 @@ static NSUInteger gcd(NSUInteger a, NSUInteger b) {
     return self.numerator == 0;
 }
 
-- (Rational *)absoluteValue
+- (MTRational *)absoluteValue
 {
     return (self.isNegative) ? self.negation : self;
 }
 
-- (BOOL)isGreaterThan:(Rational *)r
+- (BOOL)isGreaterThan:(MTRational *)r
 {
     return ([self compare:r] == NSOrderedDescending);
 }
 
-- (BOOL) isLessThan:(Rational *)r
+- (BOOL) isLessThan:(MTRational *)r
 {
     return ([self compare:r] == NSOrderedAscending);
 }
