@@ -54,8 +54,8 @@
 		49DEC8B21CF77A16000053CD /* MTReorderTermsRule.m in Sources */ = {isa = PBXBuildFile; fileRef = 49DEC8961CF77A16000053CD /* MTReorderTermsRule.m */; };
 		49DEC8B31CF77A16000053CD /* MTRule.m in Sources */ = {isa = PBXBuildFile; fileRef = 49DEC8981CF77A16000053CD /* MTRule.m */; };
 		49DEC8B41CF77A16000053CD /* MTZeroRule.m in Sources */ = {isa = PBXBuildFile; fileRef = 49DEC89A1CF77A16000053CD /* MTZeroRule.m */; };
-		69E42E66DFB3136DD8000948 /* libPods-MathSolverTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AE07A654E8034983CA73BACD /* libPods-MathSolverTests.a */; };
-		A9D57B58A7402A5C4F43752E /* libPods-MathSolver.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 629A1C1817493D056736B4E6 /* libPods-MathSolver.a */; };
+		55133F3EAF772711CF3339D6 /* libPods-MathSolverTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D8939A39D93544AACC5656B /* libPods-MathSolverTests.a */; };
+		9E57590E7A6BE63D9E65CD08 /* libPods-MathSolver.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 266296E3290467065E771528 /* libPods-MathSolver.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -71,6 +71,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		266296E3290467065E771528 /* libPods-MathSolver.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MathSolver.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		49A4D8581CF7A59100F8DCED /* MTSymbol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTSymbol.h; sourceTree = "<group>"; };
 		49A4D8591CF7A59100F8DCED /* MTSymbol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTSymbol.m; sourceTree = "<group>"; };
 		49A4D85A1CF7A59100F8DCED /* MTTokenizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTTokenizer.h; sourceTree = "<group>"; };
@@ -161,9 +162,8 @@
 		49DEC89A1CF77A16000053CD /* MTZeroRule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTZeroRule.m; sourceTree = "<group>"; };
 		49DEC8B91CF78E86000053CD /* Log.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Log.pch; sourceTree = "<group>"; };
 		4F414D58011471A119E8C6F4 /* Pods-MathSolver.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MathSolver.release.xcconfig"; path = "Pods/Target Support Files/Pods-MathSolver/Pods-MathSolver.release.xcconfig"; sourceTree = "<group>"; };
-		629A1C1817493D056736B4E6 /* libPods-MathSolver.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MathSolver.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		5D8939A39D93544AACC5656B /* libPods-MathSolverTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MathSolverTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		971DFCE3D8E41A5446B5AC27 /* Pods-MathSolverTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MathSolverTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-MathSolverTests/Pods-MathSolverTests.release.xcconfig"; sourceTree = "<group>"; };
-		AE07A654E8034983CA73BACD /* libPods-MathSolverTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MathSolverTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CBCAD9DE7EE9A47DF798161F /* Pods-MathSolverTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MathSolverTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MathSolverTests/Pods-MathSolverTests.debug.xcconfig"; sourceTree = "<group>"; };
 		D06015C8F0F013669F5BE437 /* Pods-MathSolver.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MathSolver.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MathSolver/Pods-MathSolver.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -173,7 +173,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A9D57B58A7402A5C4F43752E /* libPods-MathSolver.a in Frameworks */,
+				9E57590E7A6BE63D9E65CD08 /* libPods-MathSolver.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -181,7 +181,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				69E42E66DFB3136DD8000948 /* libPods-MathSolverTests.a in Frameworks */,
+				55133F3EAF772711CF3339D6 /* libPods-MathSolverTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -352,8 +352,8 @@
 		A8335C1A6939571053B9CCB9 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				629A1C1817493D056736B4E6 /* libPods-MathSolver.a */,
-				AE07A654E8034983CA73BACD /* libPods-MathSolverTests.a */,
+				266296E3290467065E771528 /* libPods-MathSolver.a */,
+				5D8939A39D93544AACC5656B /* libPods-MathSolverTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

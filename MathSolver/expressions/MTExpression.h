@@ -8,10 +8,10 @@
 //  MIT license. See the LICENSE file for details.
 //
 
-#import <Foundation/Foundation.h>
+@import Foundation;
 
+#import <iosMath/MTMathListIndex.h>
 #import "MTRational.h"
-#import "MTMathListIndex.h"
 
 extern const char kMTUnaryMinus;
 extern const char kMTSubtraction;
