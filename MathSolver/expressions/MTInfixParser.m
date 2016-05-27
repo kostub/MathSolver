@@ -204,23 +204,29 @@ NSString *const MTParseErrorOffset = @"ParseErrorOffset";
                 break;
             }
                 
-            case kMTMathAtomUnaryOperator:
+            case kMTMathAtomUnaryOperator: {
+                if (charValue == 0x2212) {
+                    charValue = kMTSubtraction;
+                }
                 if (charValue == kMTSubtraction) {
                     next = [MTSymbol symbolWithType:kMTSymbolTypeOperator value:[NSNumber numberWithUnsignedShort:kMTUnaryMinus] offset:atom.indexRange];
                     if (![self handleOperator:next]) {
                         return nil;
                     }
-                    break;
                 } else {
                     [self setError:MTParserNotEnoughArguments text:[NSString stringWithFormat:@"Not enough arguments for %C", charValue] index:[MTMathListIndex level0Index:atom.indexRange.location]];
                     return nil;
                 }
+                break;
+            }
                 
             case kMTMathAtomBinaryOperator: {
                 if (charValue == 0x00D7) {
                     charValue = kMTMultiplication;
                 } else if (charValue == 0x00F7) {
                     charValue = kMTDivision;
+                } else if (charValue == 0x2212) {
+                    charValue = kMTSubtraction;
                 }
                 if (charValue == kMTMultiplication || charValue == kMTAddition || charValue == kMTSubtraction || charValue == kMTDivision) {
                     next = [MTSymbol symbolWithType:kMTSymbolTypeOperator value:[NSNumber numberWithUnsignedShort:charValue] offset:atom.indexRange];
@@ -285,9 +291,22 @@ NSString *const MTParseErrorOffset = @"ParseErrorOffset";
                 }
                 break;
             }
+
+            case kMTMathAtomOrdinary: {
+                // The division slash '/' gets parsed as ordinary in LaTeX
+                if (charValue == kMTDivision) {
+                    next = [MTSymbol symbolWithType:kMTSymbolTypeOperator value:[NSNumber numberWithUnsignedShort:charValue] offset:atom.indexRange];
+                    if (![self handleOperator:next]) {
+                        return nil;
+                    }
+                } else {
+                    [self setError:MTParserInvalidCharacter text:[NSString stringWithFormat:@"Unknown character %c", charValue] index:[MTMathListIndex level0Index:atom.indexRange.location]];
+                    return nil;
+                }
+                break;
+            }
     
             case kMTMathAtomLargeOperator:
-            case kMTMathAtomOrdinary:
             case kMTMathAtomPunctuation:
             case kMTMathAtomRadical:
                 [self setError:MTParserInvalidCharacter text:[NSString stringWithFormat:@"Unknown character %c", charValue] index:[MTMathListIndex level0Index:atom.indexRange.location]];
