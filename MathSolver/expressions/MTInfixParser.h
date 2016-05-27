@@ -14,8 +14,8 @@
 @class MTMathList;
 
 
-FOUNDATION_EXPORT NSString *const FXParseError;
-FOUNDATION_EXPORT NSString *const FXParseErrorOffset;
+FOUNDATION_EXPORT NSString *const MTParseErrorDomain;
+FOUNDATION_EXPORT NSString *const MTParseErrorOffset;
 
 // A Simple parser that parses an infix string into an abstract syntax tree using the shunting yard algorithm
 // http://en.wikipedia.org/wiki/Shunting-yard_algorithm

@@ -31,8 +31,8 @@ static int precedence(char op) {
     }
 }
 
-NSString *const FXParseError = @"ParseError";
-NSString *const FXParseErrorOffset = @"FXParseErrorOffset";
+NSString *const MTParseErrorDomain = @"ParseError";
+NSString *const MTParseErrorOffset = @"ParseErrorOffset";
 
 @implementation MTInfixParser {
     NSMutableArray *_expressionStack;
@@ -85,11 +85,11 @@ NSString *const FXParseErrorOffset = @"FXParseErrorOffset";
     NSDictionary *errorDictionary;
     if (index) {
         errorDictionary = @{ NSLocalizedDescriptionKey : text,
-                             FXParseErrorOffset : index};
+                             MTParseErrorOffset : index};
     } else {
         errorDictionary = @ { NSLocalizedDescriptionKey : text };
     }
-    _error = [NSError errorWithDomain:FXParseError code:code userInfo:errorDictionary];
+    _error = [NSError errorWithDomain:MTParseErrorDomain code:code userInfo:errorDictionary];
 }
 
 #pragma mark - String
@@ -476,7 +476,7 @@ NSString *const FXParseErrorOffset = @"FXParseErrorOffset";
     if (parser.hasError) {
         // Twiddle offsets to be in the numerator
         NSError* error = parser.error;
-        MTMathListIndex* fracIndex = [MTMathListIndex indexAtLocation:frac.indexRange.location withSubIndex:[error.userInfo objectForKey:FXParseErrorOffset] type:kMTSubIndexTypeNumerator];
+        MTMathListIndex* fracIndex = [MTMathListIndex indexAtLocation:frac.indexRange.location withSubIndex:[error.userInfo objectForKey:MTParseErrorOffset] type:kMTSubIndexTypeNumerator];
         [self setError:parser.error.code text:error.localizedDescription index:fracIndex];
         return false;
     }
@@ -484,7 +484,7 @@ NSString *const FXParseErrorOffset = @"FXParseErrorOffset";
     if (parser.hasError) {
         // Twiddle offsets to be in the denominator
         NSError* error = parser.error;
-        MTMathListIndex* fracIndex = [MTMathListIndex indexAtLocation:frac.indexRange.location withSubIndex:[error.userInfo objectForKey:FXParseErrorOffset] type:kMTSubIndexTypeDenominator];
+        MTMathListIndex* fracIndex = [MTMathListIndex indexAtLocation:frac.indexRange.location withSubIndex:[error.userInfo objectForKey:MTParseErrorOffset] type:kMTSubIndexTypeDenominator];
         [self setError:parser.error.code text:error.localizedDescription index:fracIndex];
         return false;
     }
