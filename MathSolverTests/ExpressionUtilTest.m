@@ -77,7 +77,7 @@ static NSArray* getTestDataForDiff() {
         XCTAssertEqualObjects([NSNumber numberWithBool:val], testCase[1], @"%@", desc);
         if (val) {
             XCTAssertEqual(coeff.denominator, 1u, @"%@", desc);
-            XCTAssertEqualObjects([NSNumber numberWithInt:coeff.numerator], testCase[2], @"%@", desc);
+            XCTAssertEqualObjects(@(coeff.numerator), testCase[2], @"%@", desc);
             // build an array of variables
             NSArray* expectedVars = [self parseExpressionArray:testCase[3]];
             XCTAssertEqualObjects(vars, expectedVars, @"%@", desc);

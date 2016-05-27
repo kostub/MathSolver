@@ -30,7 +30,6 @@
 		49A4D8921CF7A70A00F8DCED /* ExpressionUtilTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 49A4D87D1CF7A70A00F8DCED /* ExpressionUtilTest.m */; };
 		49A4D8931CF7A70A00F8DCED /* ExpressionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 49A4D87F1CF7A70A00F8DCED /* ExpressionTest.m */; };
 		49DEC85C1CF7755F000053CD /* MathSolverTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 49DEC85B1CF7755F000053CD /* MathSolverTests.m */; };
-		49DEC85E1CF7755F000053CD /* libMathSolver.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 49DEC8491CF774E4000053CD /* libMathSolver.a */; };
 		49DEC89B1CF77A16000053CD /* MTExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = 49DEC8661CF77A16000053CD /* MTExpression.m */; };
 		49DEC89C1CF77A16000053CD /* MTExpressionUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 49DEC8681CF77A16000053CD /* MTExpressionUtil.m */; };
 		49DEC89D1CF77A16000053CD /* MTInfixParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 49DEC86A1CF77A16000053CD /* MTInfixParser.m */; };
@@ -58,16 +57,6 @@
 		69E42E66DFB3136DD8000948 /* libPods-MathSolverTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AE07A654E8034983CA73BACD /* libPods-MathSolverTests.a */; };
 		A9D57B58A7402A5C4F43752E /* libPods-MathSolver.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 629A1C1817493D056736B4E6 /* libPods-MathSolver.a */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		49DEC85F1CF7755F000053CD /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 49DEC8411CF774E4000053CD /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 49DEC8481CF774E4000053CD;
-			remoteInfo = MathSolver;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		49DEC8471CF774E4000053CD /* CopyFiles */ = {
@@ -192,7 +181,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				49DEC85E1CF7755F000053CD /* libMathSolver.a in Frameworks */,
 				69E42E66DFB3136DD8000948 /* libPods-MathSolverTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -417,7 +405,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				49DEC8601CF7755F000053CD /* PBXTargetDependency */,
 			);
 			name = MathSolverTests;
 			productName = MathSolverTests;
@@ -612,14 +599,6 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
-/* Begin PBXTargetDependency section */
-		49DEC8601CF7755F000053CD /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 49DEC8481CF774E4000053CD /* MathSolver */;
-			targetProxy = 49DEC85F1CF7755F000053CD /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
-
 /* Begin XCBuildConfiguration section */
 		49DEC8501CF774E4000053CD /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -657,7 +636,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -694,7 +673,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -728,7 +707,6 @@
 			baseConfigurationReference = CBCAD9DE7EE9A47DF798161F /* Pods-MathSolverTests.debug.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = MathSolverTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.math.MathSolverTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -740,7 +718,6 @@
 			baseConfigurationReference = 971DFCE3D8E41A5446B5AC27 /* Pods-MathSolverTests.release.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = MathSolverTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.math.MathSolverTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";

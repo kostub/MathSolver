@@ -1,12 +1,20 @@
 PODS:
   - iosMath (0.7.2)
+  - MathSolver (0.2.0):
+    - iosMath (~> 0.7.2)
 
 DEPENDENCIES:
   - iosMath (~> 0.7.2)
+  - MathSolver (from `./`)
+
+EXTERNAL SOURCES:
+  MathSolver:
+    :path: ./
 
 SPEC CHECKSUMS:
   iosMath: b0907041e16ff69b5da8833dd47126ac68d987ae
+  MathSolver: 5556263e656a5cb5848bc2eeb536e75d46e4d39a
 
-PODFILE CHECKSUM: 0c772e35f944c328204b0115eee94f6356418003
+PODFILE CHECKSUM: d6e15b39ef4bf22460ed27a3d3bfe4ef34622367
 
 COCOAPODS: 1.0.0

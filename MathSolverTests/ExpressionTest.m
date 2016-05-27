@@ -60,7 +60,7 @@ static NSDictionary* getTestData() {
     for (NSString* testExpr in dict) {
         NSNumber* expected = [dict valueForKey:testExpr];
         MTExpression* expr = [self parseExpression:testExpr];
-        NSNumber *degree = [NSNumber numberWithInt:expr.degree];
+        NSNumber *degree = @(expr.degree);
         XCTAssertEqualObjects(degree, expected, @"For expression %@", testExpr);
     }
 }
